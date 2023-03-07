@@ -1,5 +1,7 @@
 import { Sequelize, DataTypes, Model } from 'sequelize'
 import SurveySchema from './models/surveys.js'
+import QuestionSchema from './models/questions.js'
+import ContactInfoSchema from './models/contact-infos.js'
 
 const { DB_URI } = process.env
 
@@ -14,6 +16,26 @@ const connect = async () => {
 
   Survey.init(SurveySchema, { sequelize, modelName: 'Survey' })
 
+  class Question extends Model {}
+
+  Question.init(QuestionSchema, { sequelize, modelName: 'Question' })
+
+  class ContactInfo extends Model {}
+
+  ContactInfo.init(ContactInfoSchema, { sequelize, modelName: 'ContactInfo' })
+
+  /*
+  * Define data relationships
+  * */
+  Survey.hasMany(Question, { foreignKey: 'surveyId' })
+  // Question.belongsTo(Survey)
+
+  Survey.hasOne(ContactInfo, { foreignKey: 'surveyId' })
+  // ContactInfo.belongsTo(Survey)
+  //   foreignKey: {
+  //     type: DataTypes.UUID,
+  //   },
+  // })
   try {
     await sequelize.authenticate()
     console.log('Connection has been established successfully.')

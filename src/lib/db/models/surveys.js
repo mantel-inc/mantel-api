@@ -15,15 +15,14 @@ export default {
     type: DataTypes.STRING,
     defaultValue: '2023.3.0',
   },
-  user_id: { type: DataTypes.STRING },
   status: {
     type: DataTypes.ENUM,
     defaultValue: SURVEY_STATUS.IN_PROGRESS,
     values: [...Object.values(SURVEY_STATUS)],
   },
-  start_time: {
+  startTime: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW,
   },
-  end_time: { type: DataTypes.DATE },
+  endTime: { type: DataTypes.DATE },
 }

@@ -5,44 +5,50 @@ const app = express()
 
 app.use(express.json())
 
+const response = (data) => {
+  return {
+    data,
+  }
+}
 
-
-
-app.get('/hello', (req, res) => {
-  console.log('Received a get request on the path /hello')
-  res.send('Hello from express!')
-})
-
-const users = [
+const surveys = [
   {
     id: '123',
-    name: 'John Doe',
+    name: 'HVAC Incentives',
+    version: '2023.03.00',
   }, {
-    id: '234',
-    name: 'Jimmy Smith',
+    id: '123',
+    name: 'HVAC Incentives',
+    version: '2023.03.00',
   }]
 
-app.get('/users', (req, res) => {
+app.get('/surveys', (req, res) => {
   // load user data from the database
-  res.json(users)
+  res.status(200).json(response(surveys))
 })
 
 // GET /users/123
-
-app.get('/users/:id', (req, res) => {
-  const userId = req.params.id
-  const user = users.find(u => u.id === userId)
-  res.send(user)
+app.get('/surveys/:id', (req, res) => {
+  // load user data from the database
+  const surveyId = req.params.id
+  const survey = surveys.find(u => u.id === surveyId)
+  res.status(200).json(response(survey))
 })
 
-app.post('/users', (req, res) => {
+app.post('/surveys', (req, res) => {
   console.log(req.body)
-  const newUser = req.body
-  users.push(newUser)
-  res.json()
-  res.send(users)
-})
+  const newSurvey = req.body
+  // users.push(newUser)
 
+  res.status(200).json(response({ data: 'surveyId' }))
+})
+app.post('/questions', (req, res) => {
+  console.log(req.body)
+  const newQuestion = req.body
+  //validate question
+
+  res.status(200).json(response({ data: 'questionId' }))
+})
 app.listen(3001, () => {
   console.log('Express server is listing on port 3000')
 })
