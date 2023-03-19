@@ -1,11 +1,12 @@
 import express from 'express'
 import db from './lib/db/db.js'
 import sendEmail from './lib/email-client.js'
+import cors from 'cors'
 
 const app = express()
 
 app.use(express.json())
-
+app.use(cors())
 const response = (data) => {
   return {
     data,

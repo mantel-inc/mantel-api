@@ -3,8 +3,8 @@ import sgMail from '@sendgrid/mail'
 sgMail.setApiKey(process.env.SEND_GRID)
 
 let msg = {
-  // to: ['eric.p.miller84@gmail.com','zac@usemantel.com','zdearing@gmail.com'], // Change to your recipient
-  to: ['eric.p.miller84@gmail.com'], // Change to your recipient
+  to: ['eric.p.miller84@gmail.com','zac@usemantel.com','zdearing@gmail.com'], // Change to your recipient
+  // to: ['eric.p.miller84@gmail.com'], // Change to your recipient
   from: 'eric.p.miller84@gmail.com', // Change to your verified sender
   subject: 'Mantel Customer Survey Results',
   // text: 'and easy to do anywhere, even with Node.js',
