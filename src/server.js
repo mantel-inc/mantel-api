@@ -53,9 +53,9 @@ app.post('/questions', (req, res) => {
 
 app.post('/send-email', async(req, res) => {
   console.log(req.body)
-  const newQuestion = req.body
+  const data = req.body
   //validate question
-  await sendEmail()
+  await sendEmail(data)
   res.status(200).json(response({ data: 'questionId' }))
 })
 
