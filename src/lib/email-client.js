@@ -1,7 +1,7 @@
 import sgMail from '@sendgrid/mail'
 
-sgMail.setApiKey(
-  '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')
+sgMail.setApiKey(process.env.SEND_GRID)
+
 const msg = {
   to: ['epmiller8464@gmail.com','zac@usemantel.com','zdearing@gmail.com'], // Change to your recipient
   from: 'epmiller8464@gmail.com', // Change to your verified sender
