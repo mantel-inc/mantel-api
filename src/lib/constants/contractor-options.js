@@ -104,8 +104,7 @@ export const CONTRACTOR_OPTIONS = [
     "contractor_id":'dd4e55e4-bdd3-11ed-9a5f-3aebb006c675'
   },
   {
-    // "cooling_product_id" : "90da1c5e-c29a-11ed-a851-3aebb006c675",
-    "cooling_product_id" : null,
+    "cooling_product_id" : "90da1c5e-c29a-11ed-a851-3aebb006c675",
     "display_carbon_reduction" : 3,
     "display_energy_bill" : "tbu",
     "display_picture" : null,

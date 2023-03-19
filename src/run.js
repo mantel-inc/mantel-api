@@ -6,16 +6,15 @@ const session = {
   'contractorId': 'dd4e55e4-bdd3-11ed-9a5f-3aebb006c675',
   'startTime': '2023-03-08T20:14:38.237Z',
   'state': 'initiated',
-  'email':'epmiller8464@gmail.com'
+  'email': 'epmiller8464@gmail.com',
 }
 const questionMap = {
   '0': {
     'checkedSystemTypes': ['cooling', 'heating'],
-    // 'checkedSystemTypes': ['cooling'],
-    // 'checkedSystemTypes': ['heating'],
-    'heatPumpOrOther': '',
+    'other': '',
+    'otherText': '',
   },
-  '1':'single-family',
+  '1': 'single-family',
   '2': {
     'energyProvider': {
       'id': '0429dd34-bde6-11ed-9a5f-3aebb006c675',
@@ -27,32 +26,29 @@ const questionMap = {
       'name': 'Texas Gas',
       'type': 'natural_gas',
     },
+    'tankedGasText': '',
   },
-  '3': {
-    'checkedSystemTypes': ['central_ac', 'furnace'],
-    'heatPumpNothingOrOther': '',
-  },
+  '3': { 'checkedSystemTypes': [], 'nothingOrNotSure': 'nothing' },
   '4': '12',
   '5': { 'incomeLevel': '5', 'otherIncomeValue': '' },
   '6': {
     'priorityList': [
       {
-        'id': 6,
-        'type': 'Speed',
-        'name': 'Speed of replacement',
+        'id': 5,
+        'type': 'Quietness',
+        'name': 'Less noisy system',
       },
-      { 'id': 4, 'type': 'comfort', 'name': 'Improve comfort inside my house' },
-      { 'id': 2, 'type': 'energy', 'name': 'Reduce monthly utility bills' },
-      { 'id': 1, 'type': 'cost', 'name': 'Lower upfront cost' },
+      { 'id': 7, 'type': 'air-quality', 'name': 'Improve indoor air quality' },
       { 'id': 3, 'type': 'emissions', 'name': 'Reduce carbon emissions' },
-      { 'id': 5, 'type': 'Quietness', 'name': 'Quietness' }],
-    'originalList': [
-      { 'type': 'temp' },
-      { 'type': 'temp' },
-      { 'type': 'temp' },
-      { 'type': 'temp' },
-      { 'type': 'temp' },
-      { 'type': 'temp' }],
+      { 'id': 6, 'type': 'Speed', 'name': 'Quicker replacement' },
+      {
+        'id': 2,
+        'type': 'energy',
+        'name': 'Reduce monthly energy/utility bills',
+      },
+      { 'id': 4, 'type': 'comfort', 'name': 'Improve home\'s comfort' },
+      { 'id': 1, 'type': 'cost', 'name': 'Lower upfront cost' }],
+    'originalList': [{ 'type': 'temp' }],
   },
   '7': {
     'address1': '7700 Linnie Lane',

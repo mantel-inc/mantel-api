@@ -1,5 +1,6 @@
 import express from 'express'
 import db from './lib/db/db.js'
+import sendEmail from './lib/email-client.js'
 
 const app = express()
 
@@ -49,6 +50,15 @@ app.post('/questions', (req, res) => {
 
   res.status(200).json(response({ data: 'questionId' }))
 })
+
+app.post('/send-email', async(req, res) => {
+  console.log(req.body)
+  const newQuestion = req.body
+  //validate question
+  await sendEmail()
+  res.status(200).json(response({ data: 'questionId' }))
+})
+
 app.listen(3001, () => {
   console.log('Express server is listing on port 3000')
 })

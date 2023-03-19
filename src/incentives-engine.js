@@ -5,15 +5,7 @@ import { INCENTIVES_DB } from './lib/constants/incentives-db-v2.js'
 import { ENTITIES } from './lib/constants/entities.js'
 import { CONTRACTOR_DB } from './lib/constants/contractor-products.js'
 import _ from 'lodash'
-// const loadProductsByContractorId = (customerInputs) => {
-//
-//   const { contractorId, newSystemTypes } = customerInputs
-//   const { contractor, products } = ContractorProductsMap.get(contractorId)
-//
-//   let filteredProducts = products.filter(
-//     (p) => newSystemTypes.includes(p.product_type))
-//   return { contractor, products: filteredProducts }
-// }
+
 
 const findContractorById = (contractorId) => CONTRACTOR_DB.find(
   c => c.contractorId === contractorId)
@@ -24,38 +16,8 @@ const loadContractorOptions = ({ contractorId, newSystemTypes }) => {
     contractor_id: cid, homeowner_selection: hs,
   }) => cid === contractorId && hs === newSystemTypes)
 }
-// const filterIncentives = ({ product, incentives = [] }) => {
-//
-//   let results = []
-//
-//   console.log('filterIncentives', incentives)
-//   const federal = incentives.filter(i => i.entity_name === 'IRS')
-//   federal.sort((i) => Number(i.amount))
-//   if (federal) {
-//     results.push(federal.pop())
-//   }
-//
-//   const electricity = incentives.filter(
-//     i => i.energy_source === 'electricity')
-//   if (electricity) {
-//     electricity.sort((i) => Number(i.amount))
-//     results.push(electricity.pop())
-//   }
-//
-//   const gas = incentives.filter(i => i.energy_source === 'natural_gas')
-//   if (gas) {
-//     gas.sort((i) => Number(i.amount))
-//     results.push(gas.pop())
-//   }
-//
-//   return {
-//     product,
-//     incentives: [...results],
-//   }
-// }
 
-const findEntityByName = (entityName) => ENTITIES.find(
-  e => e.entity_name === entityName)
+const findEntityByName = (entityName) => ENTITIES.find(e => e.entity_name === entityName) || {}
 const findIncentives = (customerInputs, contractor) => {
   const electricProvider = findEntityByName(
     customerInputs.utility.electricityProvider.name)
@@ -75,7 +37,13 @@ const findIncentives = (customerInputs, contractor) => {
     // (i.entity_name === 'IRS' && i.region === contractor.region)
   })
 }
-const productIncentiveCompare = (incentive, product, existingSystemAge) => {
+const productIncentiveCompare = (incentive, product, existingSystemAge,existingSystemType) => {
+
+  if(incentive.existing_system_required === true && existingSystemType === 'nothing'){
+    console.warn('incentive: existing_system_required',incentive.existing_system_required)
+    console.warn('ci: existingSystemType',existingSystemType)
+    return false
+  }
 
   const typeMatch = incentive.product_type === product.product_type
   // console.log('product_type',incentive.product_type,product.product_type, typeMatch)
@@ -118,9 +86,9 @@ const filterIncentives = (incentives) => {
 }
 const matchProductIncentives = (product, incentives, customerInputs) => {
   const matches = []
-  const { existingSystemAge } = customerInputs
+  const { existingSystemAge,existingSystemTypes } = customerInputs
   const allIncentives = incentives.filter(
-    incentive => productIncentiveCompare(incentive, product, existingSystemAge))
+    incentive => productIncentiveCompare(incentive, product, existingSystemAge,existingSystemTypes))
   return filterIncentives(allIncentives)
 }
 const findProductIncentives = (session, questionMap) => {
@@ -129,12 +97,8 @@ const findProductIncentives = (session, questionMap) => {
   console.log(customerInputs)
   const { newSystemTypes, contractorId } = customerInputs
   const contractor = findContractorById(contractorId)
-  // console.log(contractor)
   const contractorOptions = loadContractorOptions(customerInputs)
-  // console.log(contractorOptions)
   const incentives = findIncentives(customerInputs, contractor, INCENTIVES_DB)
-  // console.log(incentives)
-  // return
   for (let option of contractorOptions) {
     const { heating_product_id, cooling_product_id } = option
 
@@ -146,8 +110,6 @@ const findProductIncentives = (session, questionMap) => {
       const productIncentives = matchProductIncentives(heatingProduct,
         incentives, customerInputs)
 
-      // console.log('heating product', heatingProduct)
-      // console.log('heating incentives', productIncentives)
       option.heatingProduct = {
         product: heatingProduct,
         incentives: [...productIncentives],
@@ -160,8 +122,6 @@ const findProductIncentives = (session, questionMap) => {
     if (coolingProduct) {
       const productIncentives = matchProductIncentives(coolingProduct,
         incentives, customerInputs)
-      // console.log('cooling product', coolingProduct)
-      // console.log('cooling incentives', productIncentives)
       option.coolingProduct = {
         product: coolingProduct,
         incentives: [...productIncentives],
@@ -169,7 +129,7 @@ const findProductIncentives = (session, questionMap) => {
     }
   }
   console.log(contractorOptions)
-
+  return contractorOptions
 }
 
 export { findProductIncentives }

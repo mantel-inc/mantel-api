@@ -19,7 +19,7 @@ const CUSTOMER_INPUTS = {
   },
   '2': {
     'checkedSystemTypes': ['central_ac', 'furnace'],
-    'heatPumpNothingOrOther': '',
+    'nothingOrNotSure': '',
   },
   '3': '12',
   '4': { 'incomeLevel': '5', 'otherIncomeValue': '' },
@@ -120,14 +120,12 @@ const transformSurveyQuestions = (session, questionMap) => {
 
   const questionIndexes = Object.keys(questionMap)
 
-  // console.log(questionIndexes)
 
   let utility, income, contactEmail, address, newSystemTypes, homeType,
     existingSystemTypes, existingSystemAge, customerPriorities
   for (const index in questionIndexes) {
 
     const questionResponse = questionMap[index]
-    // console.log(questionResponse)
 
     switch (index) {
       case  '0':
@@ -147,7 +145,7 @@ const transformSurveyQuestions = (session, questionMap) => {
         break
       case  '3':
         // existingSystemTypes
-        existingSystemTypes = [...questionResponse.checkedSystemTypes]
+        existingSystemTypes = questionResponse.checkedSystemTypes.length > 0 ? [...questionResponse.checkedSystemTypes] : questionResponse.nothingOrNotSure
         break
       case '4':
         existingSystemAge = questionResponse
@@ -166,7 +164,6 @@ const transformSurveyQuestions = (session, questionMap) => {
           result[i] = value
           return result
         }, {})
-        console.log(pMap)
 
         customerPriorities = pMap
         break
