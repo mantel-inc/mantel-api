@@ -4,21 +4,21 @@ import { activityEventSchema } from './validators.js'
 
 test('validateEventType: positive', () => {
   const { error, value } = activityEventSchema.validate({
-    sessionId: '1',
-    userId: '1',
-    contractorId: '1',
+    sessionId: 'some session id',
+    userId: 'some user id',
+    contractorId: 'ctid',
     eventType: 'page-view',
     data: {},
-    source: '1',
-    path: '1',
+    source: 'web',
+    path: '/survey/0',
   })
   console.log(error)
   expect(error).toBeUndefined()
 })
 test('validateEventType: negative', () => {
   const { error, value } = activityEventSchema.validate({
-    sessionId: '1',
-    userId: '1',
+    sessionId: 'some id',
+    userId: 'some user',
     contractorId: null,
     eventType: 'age-view',
     data: '',
@@ -26,5 +26,6 @@ test('validateEventType: negative', () => {
     path: '1',
   }, { abortEarly: false })
   console.log(error)
-  expect(error).toBeUndefined()
+  expect(error).toBeTruthy()
+  expect(error.details.map(d => d.message)).toContain('"contractorId" must be a string')
 })
