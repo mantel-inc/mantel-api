@@ -24,5 +24,6 @@ export default {
     type: DataTypes.ENUM,
     values: [...Object.values(ENTITY_TYPES)],
   },
-  utility_type: DataTypes.STRING
+  utility_type: DataTypes.STRING,
+  old_entity_id:DataTypes.STRING
 }

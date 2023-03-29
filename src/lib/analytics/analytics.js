@@ -1,4 +1,4 @@
-import { ActivityEvent } from './events.js'
+import { ActivityEvent } from './activity-event.js'
 import { validateEvent } from './validators.js'
 
 export const recordEvent = async ({

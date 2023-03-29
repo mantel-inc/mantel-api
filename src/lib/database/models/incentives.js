@@ -43,7 +43,7 @@ export default {
     type: DataTypes.ENUM,
     values: [...Object.values(ENERGY_SOURCES)],
   },
-  region: DataTypes.STRING,
+  region: DataTypes.ARRAY(DataTypes.STRING),
   product_type: {
     type: DataTypes.ENUM,
     values: [...Object.values(PRODUCT_TYPES)],
@@ -64,4 +64,6 @@ export default {
   display_text: DataTypes.STRING,
   documentation_url: DataTypes.STRING,
   last_updated: DataTypes.DATE,
+  old_entity_id: DataTypes.STRING,
+  old_incentives_id: DataTypes.STRING,
 }

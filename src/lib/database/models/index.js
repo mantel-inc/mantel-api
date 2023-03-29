@@ -1,5 +1,5 @@
 import ActivityEventsSchema from './activity-events.js'
-import ContactInfoSchema from './contact-infos.js'
+import ContactInfoSchema from './users.js'
 import ContractorOptionsSchema from './contractor-options.js'
 import ContractorsSchema from './contractors.js'
 import EntitiesSchema from './entities.js'
