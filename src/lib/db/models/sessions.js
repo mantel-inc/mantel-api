@@ -2,13 +2,12 @@ import { DataTypes } from 'sequelize'
 import { STATUSES } from './enums.js'
 
 /**
- * CREATE TABLE "survey" (
+ *
+ * CREATE TABLE "session" (
  *   "id" guid PRIMARY KEY,
- *   "name" varchar,
- *   "description" varchar,
- *   "version" varchar,
+ *   "tracking_id" varchar,
+ *   "contractor_id" guid,
  *   "status" status,
- *   "session_id" guid,
  *   "start_time" timestampz,
  *   "end_time" timestampz
  * );
@@ -20,22 +19,19 @@ export default {
     primaryKey: true,
     allowNull:false
   },
-  name: {
-    type: DataTypes.STRING,
+  tracking_id: {
+    type: DataTypes.UUID,
   },
-  description: { type: DataTypes.STRING },
-  version: {
-    type: DataTypes.STRING,
-    defaultValue: '2023.3.0',
+  user_id: {
+    type: DataTypes.UUID,
+  },
+  contractor_id: {
+    type: DataTypes.UUID,
   },
   status: {
     type: DataTypes.ENUM,
-    defaultValue: STATUSES.ACTIVE,
     values: [...Object.values(STATUSES)],
   },
-  startTime: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
-  },
-  endTime: { type: DataTypes.DATE },
+  start_time: DataTypes.DATE,
+  end_time: DataTypes.DATE,
 }
