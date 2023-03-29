@@ -1,5 +1,5 @@
 import {DataTypes} from 'sequelize'
-import {EVENT_TYPES} from './enums.js'
+import {EventTypes} from './enums.js'
 
 /*
 CREATE TABLE "activity_events" (
@@ -28,9 +28,7 @@ export default {
     },
     user_id: {
         type: DataTypes.UUID,
-        // defaultValue: DataTypes.UUIDV4,
         allowNull: false
-        
     },
     tracking_id: {
         type: DataTypes.STRING,
@@ -42,8 +40,8 @@ export default {
         allowNull: false
     },
     event_type: {
-        type: DataTypes.ENUM,
-        values: [...Object.values(EVENT_TYPES)],
+        type: EventTypes,
+        // values: [...Object.values(EVENT_TYPES)],
     },
     data: {type: DataTypes.JSON},
     event_source_path: {type: DataTypes.STRING},

@@ -10,6 +10,7 @@ import {SEED_SESSION} from "./src/data/session.js"
 import {SEED_SURVEY, SEED_SURVEY_QUESTIONS} from "./src/data/survey.js"
 import {createEvents} from "./src/data/activty-event.js"
 import {transformToSnakeCase} from "./src/lib/utils/transformers.js"
+
 const seed = async (db) => {
     
     const {
@@ -68,20 +69,21 @@ const seed = async (db) => {
     
     console.log(`SEEDING CONTACT INFO`)
     const user = await Users.create(transformToSnakeCase({trackingId: 'GA1.1.624216961.1679552796'}))
-    console.log(user.toJSON())
+    // console.log(user.toJSON())
     const {id: contractorId} = contractor
     const {user_id: userId, tracking_id: trackingId} = user
     
     
     const transformedSession = transformToSnakeCase(SEED_SESSION)
-    console.log(transformedSession)
+    // console.log(transformedSession)
     
     const session = await Sessions.create({
         ...transformedSession,
+        user_id: userId,
         tracking_id: user.tracking_id,
         contractor_id: contractorId
     })
-    console.log(session.toJSON())
+    // console.log(session.toJSON())
     const {id: sessionId} = session
     
     const survey = await Surveys.create({
@@ -89,18 +91,18 @@ const seed = async (db) => {
         contractor_id: contractor.id,
         session_id: session.id
     })
-    console.log(survey.toJSON())
+    // console.log(survey.toJSON())
     const mappedQuestions = SEED_SURVEY_QUESTIONS.map((q) => {
         return {...q, survey_id: survey.id}
     })
     const questions = await Questions.bulkCreate([...mappedQuestions])
-    console.log(questions.map(q => q.toJSON()))
+    // console.log(questions.map(q => q.toJSON()))
     
     const events = createEvents({sessionId, userId, trackingId, contractorId}).map(e => transformToSnakeCase(e))
-    console.log(events)
+    // console.log(events)
     
     const trackingEvents = await ActivityEvents.bulkCreate([...events])
-    console.log(trackingEvents.map(q => q.toJSON()))
+    // console.log(trackingEvents.map(q => q.toJSON()))
     
 }
 

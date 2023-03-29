@@ -21,13 +21,15 @@ const connect = async () => {
     if(sequelize) {
         return sequelize
     }
-    sequelize = new Sequelize(DB_URI, {logging: console.log})
+    sequelize = new Sequelize(DB_URI, {dialect: 'postgres', logging: false})
     
     const timestampOptions = {
         timestamps: true,
         createdAt: 'created_at',
         updatedAt: 'updated_at'
     }
+    
+    // const DataTypes.ENUM('foo', 'bar')
     
     class ActivityEvent extends Model {
     }
@@ -149,7 +151,7 @@ const connect = async () => {
         await sequelize.authenticate()
         console.log('Connection has been established successfully.')
         // await sequelize.sync()
-        await sequelize.sync({force: true})
+        await sequelize.sync()
         
     } catch (error) {
         console.error('Unable to connect to the database:', error)

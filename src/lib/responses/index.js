@@ -1,13 +1,22 @@
-export const okResponse = (data) => {
+export const OkResponse = (data) => {
     return {
-        data,
+        data: data
     }
 }
 
-export const errorResponse = (data) => {
+/**
+ *
+ * @param err
+ * @param message
+ * @param code
+ * @returns {{error: {type: *, code: number, message: string}}}
+ */
+export const ErrorResponse = function(err, message = '', code = 504) {
     return {
-        code: 400,
-        error: 'NotFound',
-        message: ''
+        error: {
+            type: err.toString(),
+            code: code,
+            message: message,
+        },
     }
 }

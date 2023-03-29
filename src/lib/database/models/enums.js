@@ -1,10 +1,12 @@
+
+import {DataTypes} from "sequelize"
+
 export const STATUSES = {
   ACTIVE: 'active',
   COMPLETED: 'completed',
   ABANDONED: 'abandoned',
   ENDED: 'ended',
 }
-
 export const PRODUCT_TYPES = {
   CENTRAL_AC: 'central_ac',
   ASHP: 'ashp',
@@ -46,3 +48,5 @@ export const ENERGY_SOURCES = {
   NATURAL_GAS: 'natural_gas',
   NONE: 'none',
 }
+
+export const EventTypes = DataTypes.ENUM(...Object.values(EVENT_TYPES))
