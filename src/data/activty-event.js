@@ -1,4 +1,3 @@
-
 import {ActivityEvent} from "../lib/analytics/activity-event.js"
 import {EVENT_TYPES} from "../lib/database/models/enums.js"
 import {DataTypes} from "sequelize"
@@ -16,6 +15,7 @@ export const createEvents = ({sessionId, userId, trackingId, contractorId}) => {
             data: {
                 timestamp: '2023-03-29T12:30:00Z',
                 ipAddress: '',
+                referral_url: ''
             },
             eventSourcePath: '/mccullough/get-started'
         }),

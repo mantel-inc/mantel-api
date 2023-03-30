@@ -7,6 +7,7 @@ import sendEmail from './lib/email-client.js'
 import {Op} from "sequelize"
 import pino from 'pino-http'
 import requestLogger from "./lib/middleware/request-logger.js"
+
 const startServer = (db) => {
     const _db = db
     const app = express()
@@ -60,70 +61,8 @@ const startServer = (db) => {
         Users
     } = _db.models
     
-    app.get('/contractors', async (req, res, next) => {
-        // load user data from the database
-        try {
-            const contractors = await Contractors.findAll() || []
-            // console.log(contractors)
-            res.status(200).json(OkResponse(contractors.map(c => c.toJSON())))
-        } catch (e) {
-            return next(new ApiError(404, 'Not Found'))
-        }
-    })
-    
-    app.get('/contractors/search', async (req, res, next) => {
-        // load user data from the database
-        const {name} = req.query
-        // query database by name
-        try {
-            const contractor = await Contractors.findOne({
-                where: {
-                    url_path_name: {
-                        [Op.eq]: name
-                    }
-                }
-            }) || {}
-            
-            res.status(200).json(OkResponse(contractor))
-        } catch (e) {
-            return next(new ApiError(404, 'Not Found'))
-        }
-    })
-    
-    app.get('/contractors/:id/', async (req, res, next) => {
-        // load user data from the database
-        const {id} = req.params
-        // query database by name
-        try {
-            const contractor = await Contractors.findByPk(id)
-            res.status(200).json(OkResponse(contractor))
-        } catch (e) {
-            return next(new ApiError(404, 'Not Found'))
-        }
-    })
-    
-    app.get('/contractors/:id/options', async (req, res, next) => {
-        // load user data from the database
-        const {id} = req.params
-        // query database by name
-        try {
-            const options = await ContractorOptions.findAll({where: {contractor_id: id}}) || []
-            res.status(200).json(OkResponse(options))
-        } catch (e) {
-            return next(new ApiError(404, 'NotFound'))
-        }
-    })
-// *********** SESSIONS *********** //
-
-// GET /session/123
-    app.get('/sessions/:id', async (req, res, next) => {
-        // load user data from the database
-        const {id} = req.params
-        const session = await Sessions.findByPk(id)
-        res.status(200).json(OkResponse(session))
-    })
-    
-    app.post('/sessions/create', async (req, res, next) => {
+    /*** Activity Events****/
+    app.post('/events', async (req, res, next) => {
         console.log(req.body)
         const session = req.body
         
@@ -154,14 +93,170 @@ const startServer = (db) => {
         
         res.status(200).json(OkResponse({sessionId}))
     })
+    
+    
+    app.get('/contractors', async (req, res, next) => {
+        // load user data from the database
+        try {
+            const contractors = await Contractors.findAll() || []
+            // console.log(contractors)
+            res.status(200).json(OkResponse(contractors.map(c => c.toJSON())))
+        } catch (e) {
+            return next(new ApiError(400, e.message, 'BadRequest'))
+        }
+    })
+    
+    app.get('/contractors/search', async (req, res, next) => {
+        // load user data from the database
+        const {name} = req.query
+        // query database by name
+        try {
+            const contractor = await Contractors.findOne({
+                where: {
+                    url_path_name: {
+                        [Op.eq]: name
+                    }
+                }
+            })
+            
+            if(contractor)
+                res.status(200).json(OkResponse(contractor))
+            else
+                return next(new ApiError(404, 'NotFound', `no contractors found matching name: ${name}`))
+            
+        } catch (e) {
+            return next(new ApiError(404, 'Not Found'))
+        }
+    })
+    
+    app.get('/contractors/:id/', async (req, res, next) => {
+        // load user data from the database
+        const {id} = req.params
+        // query database by name
+        try {
+            const contractor = await Contractors.findByPk(id)
+            res.status(200).json(OkResponse(contractor))
+        } catch (e) {
+            return next(new ApiError(404, 'Not Found'))
+        }
+    })
+    
+    app.get('/contractors/:id/options', async (req, res, next) => {
+        // load user data from the database
+        const {id} = req.params
+        // query database by name
+        try {
+            const options = await ContractorOptions.findAll({where: {contractor_id: id}}) || []
+            res.status(200).json(OkResponse(options))
+        } catch (e) {
+            return next(new ApiError(404, 'NotFound'))
+        }
+    })
+    
+    app.get('/contractors/:id/sessions', async (req, res, next) => {
+        // load user data from the database
+        const {id} = req.params
+        // query database by name
+        try {
+            const sessions = await Sessions.findAll({where: {contractor_id: id}, include: Surveys}) || []
+            res.status(200).json(OkResponse(sessions))
+        } catch (e) {
+            return next(new ApiError(404, 'NotFound'))
+        }
+    })
+    
+    
+    app.get('/contractors/:id/events', async (req, res, next) => {
+        // load user data from the database
+        const {id} = req.params
+        // query database by name
+        try {
+            
+            const events = await ActivityEvents.findAll({where: {contractor_id: id}}) || []
+            res.status(200).json(OkResponse(events))
+        } catch (e) {
+            return next(new ApiError(404, 'NotFound'))
+        }
+    })
+    
+    
+    app.get('/incentives', async (req, res, next) => {
+        // load user data from the database
+        const {id} = req.params
+        // query database by name
+        try {
+            const data = await Incentives.findAll() || []
+            res.status(200).json(OkResponse(data))
+        } catch (e) {
+            return next(new ApiError(404, 'NotFound'))
+        }
+    })
+
+
+// *********** SESSIONS *********** //
+
+// GET /session/123
+    app.get('/sessions', async (req, res, next) => {
+        // load user data from the database
+        try {
+            
+            const surveyId = req.params.id
+            const session = await Sessions.findAll() || []
+            res.status(200).json(OkResponse(session))
+        } catch (e) {
+            return next(new ApiError(404, 'NotFound', 'no resource found'))
+        }
+    })
+    app.get('/sessions/:id', async (req, res, next) => {
+        // load user data from the database
+        try {
+            
+            const surveyId = req.params.id
+            const session = await Sessions.findByPk(req.params.id)
+            res.status(200).json(OkResponse(session))
+        } catch (e) {
+            return next(new ApiError(404, 'NotFound', 'no resource found'))
+        }
+    })
+    
+    app.post('/session/create', async (req, res, next) => {
+        console.log(req.body)
+        try {
+            const sessionData = req.body
+            
+            
+            const oldSession = await Sessions.findOne({
+                where: {
+                    tracking_id: {
+                        [Op.eq]: req.body.tracking_id
+                    }
+                }
+            })
+            //TODO handle session logic
+            if(oldSession) {
+                return next(new ApiError(400, 'BadRequest', `a session already exists with sessionId = ${oldSession.id}`))
+            }
+            const newSession = await Sessions.create({...sessionData})
+            const locationUrl = `/session/${newSession.id}`
+            res.location(locationUrl)
+            res.status(201).json(OkResponse({success: true}))
+        } catch (e) {
+            req.log.error(e)
+            return next(new ApiError(404, 'NotFound', 'no resource found'))
+        }
+    })
 
 
 // GET /users/123
     app.get('/surveys/:id', async (req, res, next) => {
         // load user data from the database
-        const surveyId = req.params.id
-        const survey = surveys.find(u => u.id === surveyId)
-        res.status(200).json(OkResponse(survey))
+        try {
+            const surveyId = req.params.id
+            const survey = await Surveys.findByPk(req.params.id)
+            res.status(200).json(OkResponse(survey))
+        } catch (e) {
+            return next(new ApiError(404, 'NotFound', 'no resource found'))
+        }
     })
     
     app.post('/surveys', async (req, res, next) => {
@@ -172,11 +267,16 @@ const startServer = (db) => {
         res.status(200).json(OkResponse({data: 'surveyId'}))
     })
     
-    app.get('/surveys/:surveyId/questions', async (req, res, next) => {
+    app.get('/surveys/:id/questions', async (req, res, next) => {
         // load user data from the database
-        const surveyId = req.params.id
-        const survey = surveys.find(u => u.id === surveyId)
-        res.status(200).json(OkResponse(survey))
+        const {id} = req.params
+        // query database by name
+        try {
+            const options = await Questions.findAll({where: {survey_id: id}}) || []
+            res.status(200).json(OkResponse(options))
+        } catch (e) {
+            return next(new ApiError(404, 'NotFound', 'no resource found'))
+        }
     })
     
     app.post('/questions', async (req, res, next) => {
