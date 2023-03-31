@@ -6,7 +6,8 @@ import {ApiError} from "./lib/errors/index.js"
 import sendEmail from './lib/email-client.js'
 import {Op} from "sequelize"
 import pino from 'pino'
-import * as pp from 'pino-pretty'
+import {pinoHttp} from "pino-http"
+// import * as pp from 'pino-pretty'
 
 const log = pino({
     transport: {
@@ -24,6 +25,14 @@ const startServer = (db) => {
     app.disable('x-powered-by')
     app.set('trust proxy', 1)
     app.use([
+        pinoHttp({
+            transport: {
+                target: 'pino-pretty',
+                options: {
+                    colorize: true
+                }
+            }
+        }),
         helmet({
             dnsPrefetchControl: {allow: true},
             contentSecurityPolicy: {
@@ -36,8 +45,9 @@ const startServer = (db) => {
         cors({
             origin: '*',
             methods: 'GET,PUT,POST,DELETE,OPTIONS',
-            preflightContinue: true,
+            preflightContinue: false,
             headers: ['Content-type', 'Authorization', 'Accept', 'X-Access-Token', 'X-Key'],
+            exposedHeaders: 'Location',
         }),
         express.json(),
         express.urlencoded({extended: false}),
@@ -62,10 +72,8 @@ const startServer = (db) => {
         ActivityEvents,
         Users
     } = _db.models
+    app.options('*', cors())
     
-    app.options('/session', (req, res) => {
-    
-    })
     /*** Activity Events****/
     app.post('/events', async (req, res, next) => {
         console.log(req.body)
@@ -107,7 +115,7 @@ const startServer = (db) => {
             // console.log(contractors)
             res.status(200).json(OkResponse(contractors.map(c => c.toJSON())))
         } catch (e) {
-            return next(new ApiError(400, e.message, 'BadRequest'))
+            return next(new ApiError(400, 'BadRequest', e.message))
         }
     })
     
@@ -127,10 +135,10 @@ const startServer = (db) => {
             if(contractor)
                 res.status(200).json(OkResponse(contractor))
             else
-                return next(new ApiError(404, 'NotFound', `no contractors found matching name: ${name}`))
+                return next(new ApiError(404, 'NotFound', 'Resource not found'))
             
         } catch (e) {
-            return next(new ApiError(404, 'Not Found'))
+            return next(new ApiError(404, 'NotFound', 'Resource not found'))
         }
     })
     
@@ -142,7 +150,7 @@ const startServer = (db) => {
             const contractor = await Contractors.findByPk(id)
             res.status(200).json(OkResponse(contractor))
         } catch (e) {
-            return next(new ApiError(404, 'Not Found'))
+            return next(new ApiError(404, 'NotFound', 'Resource not found'))
         }
     })
     
@@ -154,7 +162,7 @@ const startServer = (db) => {
             const options = await ContractorOptions.findAll({where: {contractor_id: id}}) || []
             res.status(200).json(OkResponse(options))
         } catch (e) {
-            return next(new ApiError(404, 'NotFound'))
+            return next(new ApiError(404, 'NotFound', 'Resource not found'))
         }
     })
     
@@ -166,7 +174,7 @@ const startServer = (db) => {
             const sessions = await Sessions.findAll({where: {contractor_id: id}, include: Surveys}) || []
             res.status(200).json(OkResponse(sessions))
         } catch (e) {
-            return next(new ApiError(404, 'NotFound'))
+            return next(new ApiError(404, 'NotFound', 'Resource not found'))
         }
     })
     
@@ -180,7 +188,7 @@ const startServer = (db) => {
             const events = await ActivityEvents.findAll({where: {contractor_id: id}}) || []
             res.status(200).json(OkResponse(events))
         } catch (e) {
-            return next(new ApiError(404, 'NotFound'))
+            return next(new ApiError(404, 'NotFound', 'Resource not found'))
         }
     })
     
@@ -193,7 +201,7 @@ const startServer = (db) => {
             const data = await Incentives.findAll() || []
             res.status(200).json(OkResponse(data))
         } catch (e) {
-            return next(new ApiError(404, 'NotFound'))
+            return next(new ApiError(404, 'NotFound', 'Resource not found'))
         }
     })
 
@@ -201,26 +209,43 @@ const startServer = (db) => {
 // *********** SESSIONS *********** //
 
 // GET /session/123
-    app.get('/sessions', async (req, res, next) => {
-        // load user data from the database
-        try {
-            
-            const surveyId = req.params.id
-            const session = await Sessions.findAll() || []
-            res.status(200).json(OkResponse(session))
-        } catch (e) {
-            return next(new ApiError(404, 'NotFound', 'no resource found'))
+    app.get('/sessions/search', async (req, res, next) => {
+            // load user data from the database
+            try {
+                
+                const session = await Sessions.findOne({
+                    where: {
+                        [Op.and]: [
+                            {tracking_id: req.query.tracking_id},
+                            {contractor_id: req.query.contractor_id},
+                            {status: 'active'}
+                        ]
+                    }
+                })
+                if(!session) {
+                    return next(new ApiError(404, 'NotFound', 'No active session found'))
+                }
+                res.status(200).json(OkResponse(session))
+            } catch
+                (e) {
+                console.error(e)
+                return next(new ApiError(400, 'InvalidRequest', 'Invalid query parameters'))
+            }
         }
-    })
+    )
+    
     app.get('/sessions/:id', async (req, res, next) => {
         // load user data from the database
         try {
             
             const surveyId = req.params.id
             const session = await Sessions.findByPk(req.params.id)
-            res.status(200).json(OkResponse(session))
+            if(session)
+                res.status(200).json(OkResponse(session))
+            else
+                return next(new ApiError(404, 'NotFound', 'No resource found'))
         } catch (e) {
-            return next(new ApiError(404, 'NotFound', 'no resource found'))
+            return next(new ApiError(404, 'NotFound', 'No resource found'))
         }
     })
     
@@ -242,7 +267,7 @@ const startServer = (db) => {
             })
             //TODO handle session logic
             if(oldSession) {
-                return next(new ApiError(400, 'BadRequest', `a session already exists with sessionId = ${oldSession.id}`))
+                return next(new ApiError(403, 'InvalidRequest', 'Active session found'))
             }
             
             const [user, created] = await Users.findOrCreate({
@@ -270,7 +295,7 @@ const startServer = (db) => {
             res.status(201).json(OkResponse({success: true}))
         } catch (e) {
             log.error(e)
-            return next(new ApiError(404, 'NotFound', 'no resource found'))
+            return next(new ApiError(404, 'NotFound', 'Resource not found'))
         }
     })
 
@@ -283,7 +308,7 @@ const startServer = (db) => {
             const survey = await Surveys.findByPk(req.params.id)
             res.status(200).json(OkResponse(survey))
         } catch (e) {
-            return next(new ApiError(404, 'NotFound', 'no resource found'))
+            return next(new ApiError(404, 'NotFound', 'Resource not found'))
         }
     })
     
@@ -303,7 +328,7 @@ const startServer = (db) => {
             const options = await Questions.findAll({where: {survey_id: id}}) || []
             res.status(200).json(OkResponse(options))
         } catch (e) {
-            return next(new ApiError(404, 'NotFound', 'no resource found'))
+            return next(new ApiError(404, 'NotFound', 'Resource not found'))
         }
     })
     
@@ -329,7 +354,7 @@ const startServer = (db) => {
 
 // catch 404 and forward to error handler
     app.use(function (req, res, next) {
-        return next(new ApiError(404, 'Not Found', 'NotFound'))
+        return next(new ApiError(404, 'NotFound', 'Resource not found'))
     })
 
 // error handler

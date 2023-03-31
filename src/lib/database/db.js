@@ -139,7 +139,7 @@ const connect = async () => {
     Entity.hasMany(Incentive, {foreignKey: 'entity_id'})
     
     Session.hasMany(ActivityEvent, {as: 'ActivityEvents', foreignKey: 'session_id'})
-    Session.hasOne(User, {as: 'User', foreignKey: 'user_id'})
+    Session.hasOne(User, {as: 'User', foreignKey: 'id'})
     Session.hasOne(Survey, {as: 'Survey', foreignKey: 'session_id'})
     
     Survey.hasMany(Question, {as: 'Questions', foreignKey: 'survey_id'})
@@ -150,8 +150,8 @@ const connect = async () => {
     try {
         await sequelize.authenticate()
         console.log('Connection has been established successfully.')
-        // await sequelize.sync()
         await sequelize.sync()
+        // await sequelize.sync({force: true})
         
     } catch (error) {
         console.error('Unable to connect to the database:', error)
