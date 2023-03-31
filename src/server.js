@@ -5,7 +5,17 @@ import {OkResponse, ErrorResponse} from "./lib/responses/index.js"
 import {ApiError} from "./lib/errors/index.js"
 import sendEmail from './lib/email-client.js'
 import {Op} from "sequelize"
-import pino from 'pino-http'
+import pino from 'pino'
+import * as pp from 'pino-pretty'
+
+const log = pino({
+    transport: {
+        target: 'pino-pretty',
+        options: {
+            colorize: true
+        }
+    }
+})
 import requestLogger from "./lib/middleware/request-logger.js"
 
 const startServer = (db) => {
@@ -14,14 +24,6 @@ const startServer = (db) => {
     app.disable('x-powered-by')
     app.set('trust proxy', 1)
     app.use([
-        pino({
-            transport: {
-                target: 'pino-pretty',
-                options: {
-                    colorize: true
-                }
-            }
-        }),
         helmet({
             dnsPrefetchControl: {allow: true},
             contentSecurityPolicy: {
@@ -61,6 +63,9 @@ const startServer = (db) => {
         Users
     } = _db.models
     
+    app.options('/session', (req, res) => {
+    
+    })
     /*** Activity Events****/
     app.post('/events', async (req, res, next) => {
         console.log(req.body)
@@ -219,11 +224,14 @@ const startServer = (db) => {
         }
     })
     
-    app.post('/session/create', async (req, res, next) => {
-        console.log(req.body)
+    app.post('/sessions/create', async (req, res, next) => {
+        log.info('create session')
+        
         try {
             const sessionData = req.body
-            
+            const trackingId = req.body.tracking_id
+            const meta = req.body.meta || {}
+            // const contractorId = req.body.tracking_id
             
             const oldSession = await Sessions.findOne({
                 where: {
@@ -236,12 +244,32 @@ const startServer = (db) => {
             if(oldSession) {
                 return next(new ApiError(400, 'BadRequest', `a session already exists with sessionId = ${oldSession.id}`))
             }
-            const newSession = await Sessions.create({...sessionData})
+            
+            const [user, created] = await Users.findOrCreate({
+                where: {
+                    tracking_id: {
+                        [Op.eq]: trackingId
+                    }
+                }, defaults: {
+                    tracking_id: trackingId,
+                    meta
+                }
+            })
+            
+            log.info(`session user created: ${created}`)
+            console.log({
+                user_id: user.id,
+                ...sessionData,
+            })
+            const newSession = await Sessions.create({
+                user_id: user.id,
+                ...sessionData,
+            })
             const locationUrl = `/session/${newSession.id}`
             res.location(locationUrl)
             res.status(201).json(OkResponse({success: true}))
         } catch (e) {
-            req.log.error(e)
+            log.error(e)
             return next(new ApiError(404, 'NotFound', 'no resource found'))
         }
     })

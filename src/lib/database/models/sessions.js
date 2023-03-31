@@ -33,6 +33,7 @@ export default {
     status: {
         type: DataTypes.ENUM,
         values: [...Object.values(STATUSES)],
+        defaultValue: STATUSES.ACTIVE
     },
     start_time: DataTypes.DATE,
     end_time: DataTypes.DATE,

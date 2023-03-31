@@ -9,7 +9,7 @@ import {DataTypes, DATE} from 'sequelize'
  * );
  */
 export default {
-    user_id: {
+    id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,

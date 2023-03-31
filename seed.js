@@ -71,7 +71,7 @@ const seed = async (db) => {
     const user = await Users.create(transformToSnakeCase({trackingId: 'GA1.1.624216961.1679552796'}))
     // console.log(user.toJSON())
     const {id: contractorId} = contractor
-    const {user_id: userId, tracking_id: trackingId} = user
+    const {id: userId, tracking_id: trackingId} = user
     
     
     const transformedSession = transformToSnakeCase(SEED_SESSION)
