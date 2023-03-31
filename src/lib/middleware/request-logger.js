@@ -7,9 +7,9 @@ const mapRequest = (req) => ({
 })
 
 export default (config) => (req, res, next) => {
-    if(config.ignorePaths.includes(req.path) || config.ignoreMethods.includes(req.method)) {
-        return next()
-    }
+    // if(config.ignorePaths.includes(req.path) || config.ignoreMethods.includes(req.method)) {
+    //     return next()
+    // }
     req.log.info('Request received', mapRequest(req, config))
     return next()
 }

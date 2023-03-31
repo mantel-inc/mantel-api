@@ -51,7 +51,7 @@ const startServer = (db) => {
         }),
         express.json(),
         express.urlencoded({extended: false}),
-        // requestLogger()
+        requestLogger()
     ])
     
     const surveys = [{
