@@ -18,6 +18,7 @@ const log = pino({
     }
 })
 import requestLogger from "./lib/middleware/request-logger.js"
+import {STATUSES} from "./lib/database/models/enums.js"
 
 const startServer = (db) => {
     const _db = db
@@ -44,7 +45,7 @@ const startServer = (db) => {
         }),
         cors({
             origin: '*',
-            methods: 'GET,PUT,POST,DELETE,OPTIONS',
+            methods: 'GET,PUT,PATCH,POST,DELETE,OPTIONS',
             preflightContinue: false,
             headers: ['Content-type', 'Authorization', 'Accept', 'X-Access-Token', 'X-Key'],
             exposedHeaders: 'Location',
@@ -210,29 +211,28 @@ const startServer = (db) => {
 
 // GET /session/123
     app.get('/sessions/search', async (req, res, next) => {
-            // load user data from the database
-            try {
-                
-                const session = await Sessions.findOne({
-                    where: {
-                        [Op.and]: [
-                            {tracking_id: req.query.tracking_id},
-                            {contractor_id: req.query.contractor_id},
-                            {status: 'active'}
-                        ]
-                    }
-                })
-                if(!session) {
-                    return next(new ApiError(404, 'NotFound', 'No active session found'))
+        // load user data from the database
+        try {
+            
+            const session = await Sessions.findOne({
+                where: {
+                    [Op.and]: [
+                        {tracking_id: req.query.tracking_id},
+                        {contractor_id: req.query.contractor_id},
+                        {status: 'active'}
+                    ]
                 }
-                res.status(200).json(OkResponse(session))
-            } catch
-                (e) {
-                console.error(e)
-                return next(new ApiError(400, 'InvalidRequest', 'Invalid query parameters'))
+            })
+            if(!session) {
+                return next(new ApiError(404, 'NotFound', 'No active session found'))
             }
+            res.status(200).json(OkResponse(session))
+        } catch
+            (e) {
+            console.error(e)
+            return next(new ApiError(400, 'InvalidRequest', 'Invalid query parameters'))
         }
-    )
+    })
     
     app.get('/sessions/:id', async (req, res, next) => {
         // load user data from the database
@@ -249,20 +249,39 @@ const startServer = (db) => {
         }
     })
     
+    app.patch('/sessions/:id/abandon', async (req, res, next) => {
+        // load user data from the database
+        try {
+            
+            const sessionId = req.params.id
+            const session = await Sessions.findByPk(req.params.id)
+            if(session){
+               session.status = STATUSES.ABANDONED
+                await session.save()
+            }
+            
+            res.status(204).send()
+        } catch (e) {
+            return next(new ApiError(404, 'NotFound', 'No resource found'))
+        }
+    })
+    
     app.post('/sessions/create', async (req, res, next) => {
         log.info('create session')
         
         try {
             const sessionData = req.body
             const trackingId = req.body.tracking_id
+            const contractorId = req.body.contractor_id
             const meta = req.body.meta || {}
-            // const contractorId = req.body.tracking_id
             
             const oldSession = await Sessions.findOne({
                 where: {
-                    tracking_id: {
-                        [Op.eq]: req.body.tracking_id
-                    }
+                    [Op.and]: [
+                        {tracking_id: trackingId},
+                        {contractor_id: contractorId},
+                        {status: 'active'}
+                    ]
                 }
             })
             //TODO handle session logic
