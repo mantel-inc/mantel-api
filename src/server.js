@@ -75,39 +75,6 @@ const startServer = (db) => {
     } = _db.models
     app.options('*', cors())
     
-    /*** Activity Events****/
-    app.post('/events', async (req, res, next) => {
-        console.log(req.body)
-        const session = req.body
-        
-        // check if session exists
-        if(session)
-            return next(new Error(''))
-        // check if tracking id exists in contact-infos
-        
-        /*
-        * session = {
-        trackingId: 'GA1.1.624216961.1679552796',
-        id: "a08cf48d-5132-49a6-be49-bff1246595b2",
-        userId: "4e8515d6-1255-4044-b8a2-4d0237222d26",
-        startTime: "2023-03-29T08:48:31.148Z",
-        state: "initiated",
-        contractor: {
-            "name": "McCullough Heating & Air Conditioning",
-            "displayName": "McCullough",
-            "contractorId": "dd4e55e4-bdd3-11ed-9a5f-3aebb006c675",
-            "region": ["south"],
-            "scoutReportEmailRecipients": ["al@coolmenow.com"],
-            "urlPathName": "mccullough",
-            "mainWebsiteUrl": "https://coolmenow.com/"
-        }
-    }
-        * */
-        
-        
-        res.status(200).json(OkResponse({sessionId}))
-    })
-    
     
     app.get('/contractors', async (req, res, next) => {
         // load user data from the database
@@ -157,7 +124,7 @@ const startServer = (db) => {
     
     app.get('/contractors/:id/options', async (req, res, next) => {
         // load user data from the database
-        const {id} = req.params
+        const id = req.params.id
         // query database by name
         try {
             const options = await ContractorOptions.findAll({where: {contractor_id: id}}) || []
@@ -179,7 +146,6 @@ const startServer = (db) => {
         }
     })
     
-    
     app.get('/contractors/:id/events', async (req, res, next) => {
         // load user data from the database
         const {id} = req.params
@@ -193,13 +159,70 @@ const startServer = (db) => {
         }
     })
     
+    /*** Activity Events****/
+    app.post('/events', async (req, res, next) => {
+        console.log(req.body)
+        const session = req.body
+        
+        // check if session exists
+        if(session)
+            return next(new Error(''))
+        // check if tracking id exists in contact-infos
+        
+        /*
+        * session = {
+        trackingId: 'GA1.1.624216961.1679552796',
+        id: "a08cf48d-5132-49a6-be49-bff1246595b2",
+        userId: "4e8515d6-1255-4044-b8a2-4d0237222d26",
+        startTime: "2023-03-29T08:48:31.148Z",
+        state: "initiated",
+        contractor: {
+            "name": "McCullough Heating & Air Conditioning",
+            "displayName": "McCullough",
+            "contractorId": "dd4e55e4-bdd3-11ed-9a5f-3aebb006c675",
+            "region": ["south"],
+            "scoutReportEmailRecipients": ["al@coolmenow.com"],
+            "urlPathName": "mccullough",
+            "mainWebsiteUrl": "https://coolmenow.com/"
+        }
+    }
+        * */
+        
+        
+        res.status(200).json(OkResponse({sessionId}))
+    })
+
+    /*** Entities ****/
+    app.get('/entities', async (req, res, next) => {
+        try {
+            const entities = await Entities.findAll() || []
+            // console.log(contractors)
+            res.status(200).json(OkResponse(entities.map(c => c.toJSON())))
+        } catch (e) {
+            return next(new ApiError(400, 'BadRequest', e.message))
+        }
+    })
     
+    /*** Incentives ****/
     app.get('/incentives', async (req, res, next) => {
         // load user data from the database
         const {id} = req.params
         // query database by name
         try {
             const data = await Incentives.findAll() || []
+            res.status(200).json(OkResponse(data))
+        } catch (e) {
+            return next(new ApiError(404, 'NotFound', 'Resource not found'))
+        }
+    })
+    
+    /*** Products ****/
+    app.get('/products', async (req, res, next) => {
+        // load user data from the database
+        const {id} = req.params
+        // query database by name
+        try {
+            const data = await Products.findAll() || []
             res.status(200).json(OkResponse(data))
         } catch (e) {
             return next(new ApiError(404, 'NotFound', 'Resource not found'))
