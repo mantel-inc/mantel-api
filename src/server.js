@@ -19,6 +19,7 @@ const log = pino({
 })
 import requestLogger from "./lib/middleware/request-logger.js"
 import {STATUSES} from "./lib/database/models/enums.js"
+import {ActivityEvent} from "./lib/analytics/activity-event.js"
 
 const startServer = (db) => {
     const _db = db
@@ -160,38 +161,18 @@ const startServer = (db) => {
     })
     
     /*** Activity Events****/
-    app.post('/events', async (req, res, next) => {
+    app.post('/events/record', async (req, res, next) => {
         console.log(req.body)
-        const session = req.body
         
-        // check if session exists
-        if(session)
-            return next(new Error(''))
-        // check if tracking id exists in contact-infos
-        
-        /*
-        * session = {
-        trackingId: 'GA1.1.624216961.1679552796',
-        id: "a08cf48d-5132-49a6-be49-bff1246595b2",
-        userId: "4e8515d6-1255-4044-b8a2-4d0237222d26",
-        startTime: "2023-03-29T08:48:31.148Z",
-        state: "initiated",
-        contractor: {
-            "name": "McCullough Heating & Air Conditioning",
-            "displayName": "McCullough",
-            "contractorId": "dd4e55e4-bdd3-11ed-9a5f-3aebb006c675",
-            "region": ["south"],
-            "scoutReportEmailRecipients": ["al@coolmenow.com"],
-            "urlPathName": "mccullough",
-            "mainWebsiteUrl": "https://coolmenow.com/"
+        try {
+            let activityEvent = new ActivityEvent(req.body).toJSON()
+            const event = await ActivityEvents.create(activityEvent)
+            res.status(201).json(OkResponse(event))
+        } catch (e) {
+            return next(new ApiError(400, 'BadRequest', e.message))
         }
-    }
-        * */
-        
-        
-        res.status(200).json(OkResponse({sessionId}))
     })
-
+    
     /*** Entities ****/
     app.get('/entities', async (req, res, next) => {
         try {
@@ -278,8 +259,8 @@ const startServer = (db) => {
             
             const sessionId = req.params.id
             const session = await Sessions.findByPk(req.params.id)
-            if(session){
-               session.status = STATUSES.ABANDONED
+            if(session) {
+                session.status = STATUSES.ABANDONED
                 await session.save()
             }
             
@@ -332,7 +313,7 @@ const startServer = (db) => {
                 user_id: user.id,
                 ...sessionData,
             })
-            const locationUrl = `/session/${newSession.id}`
+            const locationUrl = `/sessions/${newSession.id}`
             res.location(locationUrl)
             res.status(201).json(OkResponse({success: true}))
         } catch (e) {
@@ -379,7 +360,7 @@ const startServer = (db) => {
         const newSurvey = req.body
         // users.push(newUser)
         
-        res.status(200).json(OkResponse({data: 'surveyId'}))
+        res.status(201).json(OkResponse({data: 'surveyId'}))
     })
     
     /**

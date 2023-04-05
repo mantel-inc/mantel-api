@@ -1,3 +1,5 @@
+import {transformToSnakeCase} from "../utils/transformers.js"
+
 export class ActivityEvent {
     /**
      * sessionId of the session for the user
@@ -54,6 +56,9 @@ export class ActivityEvent {
         // this.eventSource = source
         this.eventSourcePath = eventSourcePath
         
+    }
+    toJSON(){
+        return transformToSnakeCase(this)
     }
 }
 
