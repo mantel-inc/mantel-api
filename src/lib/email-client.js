@@ -21,7 +21,11 @@ const sendEmail = async (data) => {
         // console.log(yaml.stringify(body))
         msg.template_id = 'd-265205be7ef94c3088b8bee3999e0c35'
         msg.personalizations = [{
-            to: [{email: 'epmiller8464@gmail.com'}],
+            to: [
+                {email: 'epmiller8464@gmail.com'},
+                {email: 'eric@usemantel.com'},
+                {email: 'zac@usemantel.com'}
+            ],
             dynamic_template_data: body
         }]
         
