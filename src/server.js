@@ -7,7 +7,7 @@ import sendEmail from './lib/email-client.js'
 import {Op} from "sequelize"
 import pino from 'pino'
 import {pinoHttp} from "pino-http"
-// import * as pp from 'pino-pretty'
+import * as pp from 'pino-pretty'
 
 const log = pino({
     transport: {
