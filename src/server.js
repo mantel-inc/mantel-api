@@ -371,7 +371,7 @@ const startServer = (db) => {
         const data = req.body
         //validate question
         await sendEmail(data)
-        res.status(200).json(OkResponse({data: 'questionId'}))
+        res.status(201).json(OkResponse())
     })
 
 
