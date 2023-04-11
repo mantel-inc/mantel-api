@@ -14,12 +14,11 @@ export default {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
-        allowNull: false
     },
-    session_id: {
-        type: DataTypes.UUID,
-        allowNull: false
-    },
+    // session_id: {
+    //     type: DataTypes.UUID,
+    //     allowNull: false
+    // },
     index: {
         type: DataTypes.INTEGER,
         allowNull: false

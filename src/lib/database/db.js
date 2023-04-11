@@ -137,8 +137,12 @@ const connect = async () => {
     Entity.hasMany(Incentive, {foreignKey: 'entity_id'})
     
     Session.hasMany(ActivityEvent, {as: 'ActivityEvents', foreignKey: 'session_id'})
-    Session.hasMany(Question, {as: 'Questions', foreignKey: 'session_id'})
+    Session.hasMany(Question, {as: 'Questions', foreignKey: {name: 'session_id', allowNull: false}})
+    Question.belongsTo(Session, {foreignKey: 'session_id'})
+    
+    // Question.hasOne(Session,{as: 'Session', foreignKey: 'session_id'})
     Session.hasOne(User, {as: 'User', foreignKey: 'id'})
+    User.belongsTo(Session, {foreignKey: 'id'})
     
     
     Entity.hasMany(Incentive, {foreignKey: 'entity_id'})
