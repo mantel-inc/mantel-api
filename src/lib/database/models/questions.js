@@ -16,7 +16,7 @@ export default {
         primaryKey: true,
         allowNull: false
     },
-    survey_id: {
+    session_id: {
         type: DataTypes.UUID,
         allowNull: false
     },
