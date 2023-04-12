@@ -122,12 +122,12 @@ const connect = async () => {
       * */
     
     User.hasMany(ActivityEvent, {foreignKey: 'user_id'})
-    User.hasMany(Session, {as: 'Sessions', foreignKey: 'user_id'})
+    // User.hasMany(Session, {as: 'Sessions', foreignKey: 'user_id'})
     
     
     Contractor.hasMany(ContractorOptions, {as: 'ContractorOptions', foreignKey: 'contractor_id'})
     Contractor.hasMany(ActivityEvent, {foreignKey: 'contractor_id'})
-    Contractor.hasMany(Session, {foreignKey: 'contractor_id'})
+    // Contractor.hasMany(Session, {foreignKey: 'contractor_id'})
     
     ContractorOptions.belongsTo(Contractor, {as: 'Contractor', foreignKey: 'contractor_id'})
     ContractorOptions.belongsTo(Product, {as: 'CoolingProduct', foreignKey: 'cooling_product_id'})
@@ -141,8 +141,12 @@ const connect = async () => {
     Question.belongsTo(Session, {foreignKey: 'session_id'})
     
     // Question.hasOne(Session,{as: 'Session', foreignKey: 'session_id'})
-    Session.hasOne(User, {as: 'User', foreignKey: 'id'})
-    User.belongsTo(Session, {foreignKey: 'id'})
+    User.hasMany(Session, {as: 'Sessions', foreignKey: {name: 'user_id', allowNull: false}})
+    Session.belongsTo(User, {foreignKey: 'user_id'})
+    Contractor.hasMany(Session, {as: 'Sessions', foreignKey: {name: 'contractor_id', allowNull: false}})
+    Session.belongsTo(Contractor, {foreignKey: 'contractor_id'})
+    // Session.hasOne(Contractor, {as: 'Contractor', foreignKey: 'contractor_id'})
+    // Contractor.hasMany(Session, {as: 'Sessions', foreignKey: 'contractor_id'})
     
     
     Entity.hasMany(Incentive, {foreignKey: 'entity_id'})

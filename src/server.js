@@ -242,12 +242,17 @@ const startServer = (db) => {
         // load user data from the database
         try {
             
-            const surveyId = req.params.id
             const session = await Sessions.findByPk(req.params.id)
-            if(session)
-                res.status(200).json(OkResponse(session))
-            else
+            if(session) {
+                let data = session.toJSON()
+                const contractor = await session.getContractor()
+                if(contractor) {
+                    data.contractor = contractor.toJSON()
+                }
+                res.status(200).json(OkResponse(data))
+            } else {
                 return next(new ApiError(404, 'NotFound', 'No resource found'))
+            }
         } catch (e) {
             return next(new ApiError(404, 'NotFound', 'No resource found'))
         }
@@ -344,7 +349,7 @@ const startServer = (db) => {
 
 
 // GET /questions
-  
+    
     app.get('/questions/:sessionId', async (req, res, next) => {
         
         try {
