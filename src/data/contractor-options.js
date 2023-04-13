@@ -2,7 +2,7 @@ export const CONTRACTOR_OPTIONS = [
   {
     "old_cooling_product_id" : "90da1c5e-c29a-11ed-a851-3aebb006c675",
     "display_carbon_reduction" : 3,
-    "display_energy_bill" : "~5% lower electricity bill (vs base)",
+    "display_energy_bill" : "~5% lower electricity bill",
     "display_picture" : null,
     "display_subtitle" : "Eligible for the most incentives possible",
     "display_title" : "High Efficiency Heat Pump",
@@ -13,7 +13,7 @@ export const CONTRACTOR_OPTIONS = [
   {
     "old_cooling_product_id" : "90da1c22-c29a-11ed-a851-3aebb006c675",
     "display_carbon_reduction" : 2,
-    "display_energy_bill" : "~12% lower electricity bill (vs base)",
+    "display_energy_bill" : "~12% lower electricity bill",
     "display_picture" : null,
     "display_subtitle" : "Eligible for all AC related incentives",
     "display_title" : "High Efficiency AC",
@@ -25,7 +25,7 @@ export const CONTRACTOR_OPTIONS = [
   {
     "old_cooling_product_id" : "90da1c0e-c29a-11ed-a851-3aebb006c675",
     "display_carbon_reduction" : 1,
-    "display_energy_bill" : "~5% lower electricity bill (vs base)",
+    "display_energy_bill" : "~5% lower electricity bill",
     "display_picture" : null,
     "display_subtitle" : "Eligible for some incentives",
     "display_title" : "Efficient",
@@ -49,7 +49,7 @@ export const CONTRACTOR_OPTIONS = [
   {
     "old_cooling_product_id" : "90da1c5e-c29a-11ed-a851-3aebb006c675",
     "display_carbon_reduction" : 3,
-    "display_energy_bill" : "~20% lower energy bills (vs base)",
+    "display_energy_bill" : "~20% lower energy bills",
     "display_picture" : null,
     "display_subtitle" : "Eligible for the most incentives possible",
     "display_title" : "High Efficiency Dual Fuel",
@@ -61,7 +61,7 @@ export const CONTRACTOR_OPTIONS = [
   {
     "old_cooling_product_id" : "90da1c22-c29a-11ed-a851-3aebb006c675",
     "display_carbon_reduction" : 2,
-    "display_energy_bill" : "~16% lower energy bills (vs base)",
+    "display_energy_bill" : "~16% lower energy bills",
     "display_picture" : null,
     "display_subtitle" : "Eligible for all AC and Furnace related incentives",
     "display_title" : "High Efficiency AC + Furnace",
@@ -73,7 +73,7 @@ export const CONTRACTOR_OPTIONS = [
   {
     "old_cooling_product_id" : "90da1c0e-c29a-11ed-a851-3aebb006c675",
     "display_carbon_reduction" : 1,
-    "display_energy_bill" : "~10% lower energy bills (vs base)",
+    "display_energy_bill" : "~10% lower energy bills",
     "display_picture" : null,
     "display_subtitle" : "Eligible for some incentives",
     "display_title" : "Efficient",
@@ -97,7 +97,7 @@ export const CONTRACTOR_OPTIONS = [
   {
     "old_cooling_product_id" : "90da1c5e-c29a-11ed-a851-3aebb006c675",
     "display_carbon_reduction" : 3,
-    "display_energy_bill" : "Over 21% lower energy bills (vs base)",
+    "display_energy_bill" : "Over 21% lower energy bills",
     "display_picture" : null,
     "display_subtitle" : "Eligible for the most incentives possible",
     "display_title" : "High Efficiency Dual Fuel",
@@ -109,7 +109,7 @@ export const CONTRACTOR_OPTIONS = [
   {
     "old_cooling_product_id" : null,
     "display_carbon_reduction" : 2,
-    "display_energy_bill" : "~21% lower natural gas bill (vs base)",
+    "display_energy_bill" : "~21% lower natural gas bill",
     "display_picture" : null,
     "display_subtitle" : "Eligible for all furnace related incentives",
     "display_title" : "High Efficiency Furnace",
@@ -121,7 +121,7 @@ export const CONTRACTOR_OPTIONS = [
   {
     "old_cooling_product_id" : null,
     "display_carbon_reduction" : 1,
-    "display_energy_bill" : "~15% lower natural gas bill (vs base)",
+    "display_energy_bill" : "~15% lower natural gas bill",
     "display_picture" : null,
     "display_subtitle" : "Eligible for some incentives",
     "display_title" : "Efficient",

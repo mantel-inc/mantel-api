@@ -26,5 +26,5 @@ export default {
     scout_report_email_recipients: {type: DataTypes.ARRAY(DataTypes.STRING)},
     region: {type: DataTypes.ARRAY(DataTypes.STRING)},
     main_website_url: DataTypes.STRING,
-    display_small_logo_url: DataTypes.STRING,
+    display_small_logo_url: DataTypes.TEXT,
 }
