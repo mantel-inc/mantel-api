@@ -20,7 +20,7 @@ export const PRODUCTS_DB = [
     'old_product_id': '90da1c04-c29a-11ed-a851-3aebb006c675',
   },
   {
-    'AFUE': null,
+    'afue': null,
     'ahri_certification_url': 'https:\/\/www.ahridirectory.org\/Home\/DownloadCertificate?ReferenceId=sUzbLVC3\/aFB9wkj0dGAHwa2atH\/yHj+k6ptB\/Ec54hSDHjOubHNJ6GCK4zYzM6c&ProductTypeId=3500',
     'ahri_number': '207828800',
     'cooling_capacity': 22200,
@@ -40,7 +40,7 @@ export const PRODUCTS_DB = [
     'old_product_id': '90da1c0e-c29a-11ed-a851-3aebb006c675',
   },
   {
-    'AFUE': null,
+    'afue': null,
     'ahri_certification_url': 'https:\/\/www.ahridirectory.org\/Home\/DownloadCertificate?ReferenceId=sUzbLVC3\/aFB9wkj0dGAH0q4L9ug5dGF45+zWpEr200AcMU5QGk7f4otTxc4zYP7&ProductTypeId=3500',
     'ahri_number': '209580597',
     'cooling_capacity': 21800,
@@ -61,7 +61,7 @@ export const PRODUCTS_DB = [
 
   },
   {
-    'AFUE': 0.8,
+    'afue': 0.8,
     'ahri_certification_url': 'https:\/\/www.ahridirectory.org\/Home\/DownloadCertificate?ReferenceId=sUzbLVC3\/aFB9wkj0dGAHzgPZg1cn6\/r2ofezdV1SIfEHBNZdkEtwzhZg1FCdlS8',
     'ahri_number': '203358770',
     'cooling_capacity': null,
@@ -81,7 +81,7 @@ export const PRODUCTS_DB = [
     'old_product_id': '90da1c36-c29a-11ed-a851-3aebb006c675',
   },
   {
-    'AFUE': 0.921,
+    'afue': 0.921,
     'ahri_certification_url': 'https:\/\/www.ahridirectory.org\/Home\/DownloadCertificate?ReferenceId=sUzbLVC3\/aFB9wkj0dGAHzgPZg1cn6\/r2ofezdV1SIe\/AdHbO1ABYxOWXAOGDAkr',
     'ahri_number': '203359575',
     'cooling_capacity': null,
@@ -102,13 +102,13 @@ export const PRODUCTS_DB = [
 
   },
   {
-    'AFUE': 0.972,
+    'afue': 0.96,
     'ahri_certification_url': 'https:\/\/www.ahridirectory.org\/Home\/DownloadCertificate?ReferenceId=sUzbLVC3\/aFB9wkj0dGAH5Do+14F4Z11ndPxJxN8uxWCSbU1KXBzCYEGpXjnInj9',
     'ahri_number': '204032248',
     'cooling_capacity': null,
     'cop': null,
     'display_equipment_detail': null,
-    'display_equipment_summary': 'Furnace: 97% AFUE',
+    'display_equipment_summary': 'Furnace: 96% AFUE',
     'display_equipment_tooltip': 'AFUE measures heating efficiency. A higher number indicates greater efficient.',
     'eer2': null,
     'heating_capacity': 78000,
@@ -123,7 +123,7 @@ export const PRODUCTS_DB = [
 
   },
   {
-    'AFUE': null,
+    'afue': null,
     'ahri_certification_url': 'https:\/\/www.ahridirectory.org\/Home\/DownloadCertificate?ReferenceId=sUzbLVC3\/aFB9wkj0dGAHwa2atH\/yHj+k6ptB\/Ec54g71eE0GFDkN9Bvt+\/GS72M&ProductTypeId=3523',
     'ahri_number': '207867200',
     'cooling_capacity': '23000',

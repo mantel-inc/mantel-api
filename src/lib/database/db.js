@@ -10,7 +10,6 @@ import {
     ProductsSchema,
     QuestionsSchema,
     SessionsSchema,
-    SurveysSchema,
 } from './models/index.js'
 import Contractors from './models/contractors.js'
 
@@ -96,40 +95,39 @@ const connect = async () => {
     class Incentive extends Model {
     }
     
-    Incentive.init(IncentivesSchema,
-        {sequelize, tableName: 'incentives', modelName: 'Incentives', ...timestampOptions})
+    Incentive.init(IncentivesSchema, {sequelize, tableName: 'incentives', modelName: 'Incentives', ...timestampOptions})
     
     
     class Question extends Model {
     }
     
-    Question.init(QuestionsSchema,
-        {sequelize, tableName: 'questions', modelName: 'Questions', ...timestampOptions})
-    
-    class Survey extends Model {
-    }
-    
-    Survey.init(SurveysSchema,
-        {sequelize, tableName: 'surveys', modelName: 'Surveys', ...timestampOptions})
+    Question.init(QuestionsSchema, {
+        sequelize,
+        tableName: 'questions',
+        modelName: 'Questions',
+        indexes: [{
+            unique: true,
+            fields: ['session_id', 'index']
+        }],
+        ...timestampOptions,
+    })
     
     class Session extends Model {
     }
     
-    Session.init(SessionsSchema,
-        {sequelize, tableName: 'sessions', modelName: 'Sessions', ...timestampOptions})
+    Session.init(SessionsSchema, {sequelize, tableName: 'sessions', modelName: 'Sessions', ...timestampOptions})
     
     /*
       * Define data relationships
       * */
     
     User.hasMany(ActivityEvent, {foreignKey: 'user_id'})
-    User.hasMany(Session, {as: 'Sessions', foreignKey: 'user_id'})
-    User.hasMany(Survey, {as: 'Surveys', foreignKey: 'user_id'})
+    // User.hasMany(Session, {as: 'Sessions', foreignKey: 'user_id'})
     
     
     Contractor.hasMany(ContractorOptions, {as: 'ContractorOptions', foreignKey: 'contractor_id'})
     Contractor.hasMany(ActivityEvent, {foreignKey: 'contractor_id'})
-    Contractor.hasMany(Session, {foreignKey: 'contractor_id'})
+    // Contractor.hasMany(Session, {foreignKey: 'contractor_id'})
     
     ContractorOptions.belongsTo(Contractor, {as: 'Contractor', foreignKey: 'contractor_id'})
     ContractorOptions.belongsTo(Product, {as: 'CoolingProduct', foreignKey: 'cooling_product_id'})
@@ -139,10 +137,17 @@ const connect = async () => {
     Entity.hasMany(Incentive, {foreignKey: 'entity_id'})
     
     Session.hasMany(ActivityEvent, {as: 'ActivityEvents', foreignKey: 'session_id'})
-    Session.hasOne(User, {as: 'User', foreignKey: 'id'})
-    Session.hasOne(Survey, {as: 'Survey', foreignKey: 'session_id'})
+    Session.hasMany(Question, {as: 'Questions', foreignKey: {name: 'session_id', allowNull: false}})
+    Question.belongsTo(Session, {foreignKey: 'session_id'})
     
-    Survey.hasMany(Question, {as: 'Questions', foreignKey: 'survey_id'})
+    // Question.hasOne(Session,{as: 'Session', foreignKey: 'session_id'})
+    User.hasMany(Session, {as: 'Sessions', foreignKey: {name: 'user_id', allowNull: false}})
+    Session.belongsTo(User, {foreignKey: 'user_id'})
+    Contractor.hasMany(Session, {as: 'Sessions', foreignKey: {name: 'contractor_id', allowNull: false}})
+    Session.belongsTo(Contractor, {foreignKey: 'contractor_id'})
+    // Session.hasOne(Contractor, {as: 'Contractor', foreignKey: 'contractor_id'})
+    // Contractor.hasMany(Session, {as: 'Sessions', foreignKey: 'contractor_id'})
+    
     
     Entity.hasMany(Incentive, {foreignKey: 'entity_id'})
     Incentive.belongsTo(Entity, {as: 'Entity', foreignKey: 'entity_id'})

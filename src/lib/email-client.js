@@ -4,14 +4,7 @@ import yaml from 'json-to-pretty-yaml'
 sgMail.setApiKey(process.env.SEND_GRID)
 
 let msg = {
-    // to: ['epmiller8464@gmail.com'], // Change to your recipient
-    // to: ['epmiller8464@gmail.com', 'zac@usemantel.com'], // Change to your recipient
-    // to: ['eric.p.miller84@gmail.com','zac@usemantel.com','zdearing@gmail.com'], // Change to your recipient
-    // to: ['eric.p.miller84@gmail.com'], // Change to your recipient
-    from: 'eric@usemantel.com', // Change to your verified sender
-    // subject: 'Mantel Customer Survey Results',
-    // text: 'and easy to do anywhere, even with Node.js',
-    // html: '<code>and easy to do anywhere, even with Node.js</code>',
+    from: 'scout@usemantel.com', // Change to your verified sender
 }
 
 const sendEmail = async (data) => {

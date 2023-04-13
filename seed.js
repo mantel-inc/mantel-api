@@ -86,14 +86,14 @@ const seed = async (db) => {
     // console.log(session.toJSON())
     const {id: sessionId} = session
     
-    const survey = await Surveys.create({
-        ...transformToSnakeCase(SEED_SURVEY),
-        contractor_id: contractor.id,
-        session_id: session.id
-    })
+    // const survey = await Surveys.create({
+    //     ...transformToSnakeCase(SEED_SURVEY),
+    //     contractor_id: contractor.id,
+    //     session_id: session.id
+    // })
     // console.log(survey.toJSON())
     const mappedQuestions = SEED_SURVEY_QUESTIONS.map((q) => {
-        return {...q, survey_id: survey.id}
+        return {...q, session_id: sessionId}
     })
     const questions = await Questions.bulkCreate([...mappedQuestions])
     // console.log(questions.map(q => q.toJSON()))

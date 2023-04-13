@@ -242,16 +242,22 @@ const startServer = (db) => {
         // load user data from the database
         try {
             
-            const surveyId = req.params.id
             const session = await Sessions.findByPk(req.params.id)
-            if(session)
-                res.status(200).json(OkResponse(session))
-            else
+            if(session) {
+                let data = session.toJSON()
+                const contractor = await session.getContractor()
+                if(contractor) {
+                    data.contractor = contractor.toJSON()
+                }
+                res.status(200).json(OkResponse(data))
+            } else {
                 return next(new ApiError(404, 'NotFound', 'No resource found'))
+            }
         } catch (e) {
             return next(new ApiError(404, 'NotFound', 'No resource found'))
         }
     })
+    
     
     app.patch('/sessions/:id/abandon', async (req, res, next) => {
         // load user data from the database
@@ -260,7 +266,26 @@ const startServer = (db) => {
             const sessionId = req.params.id
             const session = await Sessions.findByPk(req.params.id)
             if(session) {
-                session.status = STATUSES.ABANDONED
+                if(session.status !== STATUSES.COMPLETED) {
+                    session.status = STATUSES.ABANDONED
+                    await session.save()
+                }
+            }
+            
+            res.status(204).send()
+        } catch (e) {
+            return next(new ApiError(404, 'NotFound', 'No resource found'))
+        }
+    })
+    
+    app.patch('/sessions/:id/complete', async (req, res, next) => {
+        // load user data from the database
+        try {
+            
+            const session = await Sessions.findByPk(req.params.id)
+            if(session) {
+                session.status = STATUSES.COMPLETED
+                session.end_time = new Date()
                 await session.save()
             }
             
@@ -288,7 +313,7 @@ const startServer = (db) => {
                     ]
                 }
             })
-            //TODO handle session logic
+            
             if(oldSession) {
                 return next(new ApiError(403, 'InvalidRequest', 'Active session found'))
             }
@@ -323,44 +348,46 @@ const startServer = (db) => {
     })
 
 
-// GET /users/123
-    app.get('/surveys/:id', async (req, res, next) => {
-        // load user data from the database
-        try {
-            const surveyId = req.params.id
-            const survey = await Surveys.findByPk(req.params.id)
-            res.status(200).json(OkResponse(survey))
-        } catch (e) {
-            return next(new ApiError(404, 'NotFound', 'Resource not found'))
-        }
-    })
+// GET /questions
     
-    app.post('/surveys', async (req, res, next) => {
-        console.log(req.body)
-        const newSurvey = req.body
-        // users.push(newUser)
+    app.get('/questions/:sessionId', async (req, res, next) => {
         
-        res.status(200).json(OkResponse({data: 'surveyId'}))
-    })
-    
-    app.get('/surveys/:id/questions', async (req, res, next) => {
-        // load user data from the database
-        const {id} = req.params
-        // query database by name
         try {
-            const options = await Questions.findAll({where: {survey_id: id}}) || []
-            res.status(200).json(OkResponse(options))
+            
+            const questions = await Questions.findAll({
+                where: {session_id: req.params.sessionId}
+            })
+            
+            if(questions)
+                res.status(201).json(OkResponse(questions))
+            else
+                return next(new ApiError(404, 'NotFound', 'No questions for session.'))
+            
+            
         } catch (e) {
-            return next(new ApiError(404, 'NotFound', 'Resource not found'))
+            log.error(e)
+            return next(new ApiError(400, 'BadRequest', e.message))
         }
     })
     
     app.post('/questions', async (req, res, next) => {
-        console.log(req.body)
-        const newSurvey = req.body
-        // users.push(newUser)
         
-        res.status(201).json(OkResponse({data: 'surveyId'}))
+        try {
+            
+            const questionBody = req.body
+            
+            const question = await Questions.create(questionBody)
+            
+            if(question)
+                res.status(201).json(OkResponse())
+            else
+                return next(new ApiError(403, 'InvalidRequest', 'Invalid parameters.'))
+            
+            
+        } catch (e) {
+            log.error(e)
+            return next(new ApiError(400, 'BadRequest', e.message))
+        }
     })
     
     /**
