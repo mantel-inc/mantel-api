@@ -13,7 +13,7 @@ const start = async () => {
      * Get port from environment and store in Express.
      */
     
-    const port = normalizePort(process.env.PORT || '3000');
+    const port = normalizePort(process.env.PORT || '3001');
     app.set('port', port);
     
     /**
@@ -68,19 +68,19 @@ function onError(error) {
         throw error;
     }
     
-    var bind = typeof port === 'string'
-        ? 'Pipe ' + port
-        : 'Port ' + port;
+    // var bind = typeof port === 'string'
+    //     ? 'Pipe ' + port
+    //     : 'Port ' + port;
     
     // handle specific listen errors with friendly messages
     switch (error.code) {
         case 'EACCES':
-            console.error(bind + ' requires elevated privileges');
-            process.exit(1);
+            console.error(' requires elevated privileges');
+            // process.exit(1);
             break;
         case 'EADDRINUSE':
-            console.error(bind + ' is already in use');
-            process.exit(1);
+            console.error(' is already in use');
+            // process.exit(1);
             break;
         default:
             throw error;
@@ -92,4 +92,8 @@ function onError(error) {
  */
 
 
-start().catch(console.error)
+start().then((s)=>{
+    console.log(s)
+}).catch((error)=>{
+    onError(error)
+})

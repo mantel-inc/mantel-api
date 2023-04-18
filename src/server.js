@@ -424,7 +424,7 @@ const startServer = (db) => {
         res.json(ErrorResponse(err.type || 'Error', err.message, err.status || err.statusCode || 500))
     })
     
-    app.listen(3001, () => {
+    app.listen(3000, () => {
         console.log('Express server is listing on port 3001')
     })
     return app

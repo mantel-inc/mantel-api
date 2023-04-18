@@ -26,14 +26,21 @@ npm install
 ```
 4. Create a .env file and set the following environment variables:
    - **NOTE:** this project uses [dotenv flow](https://github.com/kerimdzhanov/dotenv-flow)
+   - create a .env.environment for each environment applicable
 ```dotenv
 # .env
+NODE_ENV=
+DB_URI=
+SEND_GRID=
+DASHBOARD_URL=
+```
+```dotenv
+# .env.development
 NODE_ENV=development
 DB_URI=postgresql://username:password@hostname:5432/database_name
 SEND_GRID=send-grid-api-key
 DASHBOARD_URL=http://localhost:8081
 ```
-
 ```dotenv
 # .env.test
 NODE_ENV=test
@@ -49,3 +56,16 @@ SEND_GRID=send-grid-api-key
 DASHBOARD_URL=production-dashboard-url
 ```
 
+5. Seed the database with initial data:
+```sh
+NODE_ENV=development node seed.js
+```
+
+## Usage
+To run the API, follow these steps:
+
+1. Start the server:
+```bash
+npm start
+```
+2. The API will now be available at http://localhost:3000. You can test it using a tool like Postman.
