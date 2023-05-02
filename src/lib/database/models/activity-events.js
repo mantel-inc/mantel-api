@@ -24,11 +24,11 @@ export default {
     },
     session_id: {
         type: DataTypes.UUID,
-        allowNull: false
+        allowNull: true
     },
     user_id: {
         type: DataTypes.UUID,
-        allowNull: false
+        allowNull: true
     },
     tracking_id: {
         type: DataTypes.STRING,
