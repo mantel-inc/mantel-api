@@ -258,7 +258,7 @@ const startServer = (db) => {
         }
     })
     
-    
+    ///PATCH
     app.patch('/sessions/:id/abandon', async (req, res, next) => {
         // load user data from the database
         try {
@@ -266,8 +266,11 @@ const startServer = (db) => {
             const sessionId = req.params.id
             const session = await Sessions.findByPk(req.params.id)
             if(session) {
-                if(session.status !== STATUSES.COMPLETED) {
+                const immutableStates = [STATUSES.COMPLETED, STATUSES.GRACEFUL_EXIT]
+                // if(session.status !== STATUSES.COMPLETED) {
+                if(!immutableStates.includes(session.status)) {
                     session.status = STATUSES.ABANDONED
+                    session.end_time = new Date()
                     await session.save()
                 }
             }
@@ -284,9 +287,31 @@ const startServer = (db) => {
             
             const session = await Sessions.findByPk(req.params.id)
             if(session) {
-                session.status = STATUSES.COMPLETED
-                session.end_time = new Date()
-                await session.save()
+                if(STATUSES.ACTIVE === session.status) {
+                    session.status = STATUSES.COMPLETED
+                    session.end_time = new Date()
+                    await session.save()
+                }
+            }
+            
+            res.status(204).send()
+        } catch (e) {
+            return next(new ApiError(404, 'NotFound', 'No resource found'))
+        }
+    })
+    
+    app.patch('/sessions/:id/exit', async (req, res, next) => {
+        // load user data from the database
+        try {
+            
+            const session = await Sessions.findByPk(req.params.id)
+            if(session) {
+                // const mutableStates = [STATUSES.ACTIVE]
+                if(STATUSES.ACTIVE === session.status) {
+                    session.status = STATUSES.GRACEFUL_EXIT
+                    session.end_time = new Date()
+                    await session.save()
+                }
             }
             
             res.status(204).send()
@@ -390,6 +415,24 @@ const startServer = (db) => {
         }
     })
     
+    // USERS
+    app.patch('/user/:id', async (req, res, next) => {
+        // load user data from the database
+        try {
+            
+            const {email, address} = req.body
+            const user = await Users.findByPk(req.params.id)
+            if(user) {
+                user.email = email
+                user.address = address
+                await user.save()
+            }
+            
+            res.status(204).send()
+        } catch (e) {
+            return next(new ApiError(404, 'NotFound', 'No resource found'))
+        }
+    })
     /**
      * email
      */
