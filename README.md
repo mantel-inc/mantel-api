@@ -26,26 +26,47 @@ npm install
 ```
 4. Create a .env file and set the following environment variables:
    - **NOTE:** this project uses [dotenv flow](https://github.com/kerimdzhanov/dotenv-flow)
-```dotenv
-# .env
-NODE_ENV=development
-DB_URI=postgresql://username:password@hostname:5432/database_name
-SEND_GRID=send-grid-api-key
-DASHBOARD_URL=http://localhost:8081
-```
+   - 
+Ask Zac for access to secure credentials stored in 1password.
 
 ```dotenv
-# .env.test
-NODE_ENV=test
-DB_URI=test-dburl
-SEND_GRID=send-grid-api-key
-DASHBOARD_URL=test-dashboard-url
+# .env.development
+NODE_ENV=development
+
+DB_USERNAME=
+DB_PASSWORD=
+DB_PORT=
+DB_DATABASE=
+DB_HOSTNAME=
+DB_CA_CERT=
+
+PORT=
+SEND_GRID=
+DASHBOARD_URL=
 ```
+
 ```dotenv
 # .env.production
 NODE_ENV=production
-DB_URI=prod-dburl
-SEND_GRID=send-grid-api-key
-DASHBOARD_URL=production-dashboard-url
+
+DB_USERNAME=
+DB_PASSWORD=
+DB_PORT=
+DB_DATABASE=
+DB_HOSTNAME=
+DB_CA_CERT=
+
+PORT=
+SEND_GRID=
+DASHBOARD_URL=
 ```
 
+## Usage
+To run the API, follow these steps:
+
+1. Start the server:
+```bash
+ NODE_ENV=development node src/www.js 
+```
+2. The API will now be available at http://localhost:3000. You can test it using a tool like Postman.
+3. Postman API Documentation can be found [here](https://documenter.getpostman.com/view/21162091/2s93eZyBiY)
