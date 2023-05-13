@@ -20,7 +20,30 @@ const connect = async () => {
     if(sequelize) {
         return sequelize
     }
-    sequelize = new Sequelize(DB_URI, {dialect: 'postgres', logging: false})
+    
+    if(process.env.NODE_ENV !== 'development') {
+        const sslCaCert = Buffer.from(process.env.DB_CA_CERT, 'base64').toString('utf8')
+        const config = {
+            username: process.env.DB_USERNAME,
+            database: process.env.DB_DATABASE,
+            password: process.env.DB_PASSWORD,
+            host: process.env.DB_HOSTNAME,
+            port: 5432,
+            ssl: true,
+            keepAlive:true,
+            dialect: 'postgres',
+            logging: false,
+            dialectOptions: {
+                ssl: {
+                    require: true,
+                    ca: sslCaCert
+                }
+            },
+        }
+        sequelize = new Sequelize(config)
+    } else {
+        sequelize = new Sequelize(DB_URI, {dialect: 'postgres', logging: false})
+    }
     
     const timestampOptions = {
         timestamps: true,
