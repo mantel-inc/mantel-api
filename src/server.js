@@ -416,7 +416,7 @@ const startServer = (db) => {
         }
     })
     
-    // USERS
+    /* User routes */
     app.patch('/user/:id', async (req, res, next) => {
         // load user data from the database
         try {
@@ -434,9 +434,9 @@ const startServer = (db) => {
             return next(new ApiError(404, 'NotFound', 'No resource found'))
         }
     })
-    /**
-     * email
-     */
+    
+    
+    /* Send emails */
     app.post('/send-email', async (req, res, next) => {
         console.log(req.body)
         const data = req.body
@@ -444,14 +444,15 @@ const startServer = (db) => {
         await sendEmail(data)
         res.status(201).json(OkResponse())
     })
-
-
-// catch 404 and forward to error handler
+    
+    /* Error handlers */
+    
+    // catch 404 and forward to error handler
     app.use(function (req, res, next) {
         return next(new ApiError(404, 'NotFound', 'Resource not found'))
     })
 
-// error handler
+    // error handler
     app.use(function (err, req, res, next) {
         // set locals, only providing error in development
         res.locals.message = err.message
@@ -464,7 +465,7 @@ const startServer = (db) => {
         
         // render the error page
         res.status(err.status || err.statusCode || 500)
-        
+        // ErrorResponse shapes all errors to the same format
         res.json(ErrorResponse(err.type || 'Error', err.message, err.status || err.statusCode || 500))
     })
     
