@@ -1,3 +1,4 @@
+/// a script for testing not used in prod
 import { findProductIncentives } from './incentives-engine.js'
 
 const session = {

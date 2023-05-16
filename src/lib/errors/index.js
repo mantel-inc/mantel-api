@@ -1,3 +1,7 @@
+
+/***
+ * Standard ApiError
+ */
 class ApiError extends Error {
     constructor(status, name, message) {
         super(message)

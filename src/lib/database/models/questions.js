@@ -1,13 +1,7 @@
 import {DataTypes} from 'sequelize'
 
 /**
- *  "id" guid PRIMARY KEY,
- *   "survey_id" guid NOT NULL,
- *   "index" int NOT NULL,
- *   "question_text" varchar NOT NULL,
- *   "question_response" json,
- *   "start_time" timestampz,
- *   "end_time" timestampz
+ * Questions model
  */
 export default {
     id: {
@@ -15,10 +9,6 @@ export default {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
     },
-    // session_id: {
-    //     type: DataTypes.UUID,
-    //     allowNull: false
-    // },
     index: {
         type: DataTypes.INTEGER,
         allowNull: false
