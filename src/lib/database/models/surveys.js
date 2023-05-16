@@ -2,16 +2,8 @@ import {DataTypes} from 'sequelize'
 import {STATUSES} from './enums.js'
 
 /**
- * CREATE TABLE "survey" (
- *   "id" guid PRIMARY KEY,
- *   "name" varchar,
- *   "description" varchar,
- *   "version" varchar,
- *   "status" status,
- *   "session_id" guid,
- *   "start_time" timestampz,
- *   "end_time" timestampz
- * );
+ * Surveys Model
+ * @deprecated (DEPRICATED)
  */
 export default {
     id: {

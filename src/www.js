@@ -2,10 +2,13 @@
 import 'dotenv-flow/config.js'
 import startServer from './server.js'
 import http from 'http'
-import {configureEnvironment} from "./lib/configure-environment.js"
 import connect from "./lib/database/db.js"
 
 
+/***
+ * Application entry point
+ * @returns {Promise<void>}
+ */
 const start = async () => {
     const db = await connect()
     const app = startServer(db)

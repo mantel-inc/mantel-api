@@ -7,7 +7,6 @@ import sendEmail from './lib/email-client.js'
 import {Op} from "sequelize"
 import pino from 'pino'
 import {pinoHttp} from "pino-http"
-import * as pp from 'pino-pretty'
 
 const log = pino({
     transport: {
@@ -17,15 +16,23 @@ const log = pino({
         }
     }
 })
+
 import requestLogger from "./lib/middleware/request-logger.js"
 import {STATUSES} from "./lib/database/models/enums.js"
 import {ActivityEvent} from "./lib/analytics/activity-event.js"
 
+/***
+ * start and configure the express server. Route setup, middleware config, and error handling.
+ * @param db
+ * @returns {Express}
+ */
 const startServer = (db) => {
     const _db = db
+    /// create express app
     const app = express()
     app.disable('x-powered-by')
     app.set('trust proxy', 1)
+    /// use middlewares
     app.use([
         pinoHttp({
             transport: {
@@ -56,12 +63,7 @@ const startServer = (db) => {
         requestLogger()
     ])
     
-    const surveys = [{
-        id: '123', name: 'HVAC Incentives', version: '2023.03.00',
-    }, {
-        id: '123', name: 'HVAC Incentives', version: '2023.03.00',
-    }]
-    
+    /// load models from incoming db connection for use in the routes
     const {
         Products,
         Contractors,
@@ -74,9 +76,10 @@ const startServer = (db) => {
         ActivityEvents,
         Users
     } = _db.models
+    
     app.options('*', cors())
     
-    
+    /* Contractor routes */
     app.get('/contractors', async (req, res, next) => {
         // load user data from the database
         try {
@@ -160,7 +163,7 @@ const startServer = (db) => {
         }
     })
     
-    /*** Activity Events****/
+    /* Activity event routes */
     app.post('/events/record', async (req, res, next) => {
         console.log(req.body)
         
@@ -173,7 +176,7 @@ const startServer = (db) => {
         }
     })
     
-    /*** Entities ****/
+    /* Entities routes */
     app.get('/entities', async (req, res, next) => {
         try {
             const entities = await Entities.findAll() || []
@@ -184,7 +187,7 @@ const startServer = (db) => {
         }
     })
     
-    /*** Incentives ****/
+    /* Incentives routes*/
     app.get('/incentives', async (req, res, next) => {
         // load user data from the database
         const {id} = req.params
@@ -197,7 +200,7 @@ const startServer = (db) => {
         }
     })
     
-    /*** Products ****/
+    /* Products routes */
     app.get('/products', async (req, res, next) => {
         // load user data from the database
         const {id} = req.params
@@ -209,11 +212,9 @@ const startServer = (db) => {
             return next(new ApiError(404, 'NotFound', 'Resource not found'))
         }
     })
-
-
-// *********** SESSIONS *********** //
-
-// GET /session/123
+    
+    
+    /* SESSIONS */
     app.get('/sessions/search', async (req, res, next) => {
         // load user data from the database
         try {
@@ -258,7 +259,7 @@ const startServer = (db) => {
         }
     })
     
-    ///PATCH
+    /// PATCH
     app.patch('/sessions/:id/abandon', async (req, res, next) => {
         // load user data from the database
         try {
@@ -319,7 +320,7 @@ const startServer = (db) => {
             return next(new ApiError(404, 'NotFound', 'No resource found'))
         }
     })
-    
+    /// POST
     app.post('/sessions/create', async (req, res, next) => {
         log.info('create session')
         
@@ -371,9 +372,9 @@ const startServer = (db) => {
             return next(new ApiError(404, 'NotFound', 'Resource not found'))
         }
     })
-
-
-// GET /questions
+    
+    
+    /*Question Routes*/
     
     app.get('/questions/:sessionId', async (req, res, next) => {
         
@@ -415,7 +416,7 @@ const startServer = (db) => {
         }
     })
     
-    // USERS
+    /* User routes */
     app.patch('/user/:id', async (req, res, next) => {
         // load user data from the database
         try {
@@ -433,9 +434,9 @@ const startServer = (db) => {
             return next(new ApiError(404, 'NotFound', 'No resource found'))
         }
     })
-    /**
-     * email
-     */
+    
+    
+    /* Send emails */
     app.post('/send-email', async (req, res, next) => {
         console.log(req.body)
         const data = req.body
@@ -443,14 +444,15 @@ const startServer = (db) => {
         await sendEmail(data)
         res.status(201).json(OkResponse())
     })
-
-
-// catch 404 and forward to error handler
+    
+    /* Error handlers */
+    
+    // catch 404 and forward to error handler
     app.use(function (req, res, next) {
         return next(new ApiError(404, 'NotFound', 'Resource not found'))
     })
 
-// error handler
+    // error handler
     app.use(function (err, req, res, next) {
         // set locals, only providing error in development
         res.locals.message = err.message
@@ -463,7 +465,7 @@ const startServer = (db) => {
         
         // render the error page
         res.status(err.status || err.statusCode || 500)
-        
+        // ErrorResponse shapes all errors to the same format
         res.json(ErrorResponse(err.type || 'Error', err.message, err.status || err.statusCode || 500))
     })
     

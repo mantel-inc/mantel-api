@@ -2,15 +2,7 @@ import {DataTypes} from 'sequelize'
 import {STATUSES} from './enums.js'
 
 /**
- *
- * CREATE TABLE "session" (
- *   "id" guid PRIMARY KEY,
- *   "tracking_id" varchar,
- *   "contractor_id" guid,
- *   "status" status,
- *   "start_time" timestampz,
- *   "end_time" timestampz
- * );
+ * Sessions model
  */
 export default {
     id: {

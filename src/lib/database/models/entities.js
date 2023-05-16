@@ -1,16 +1,9 @@
 import { DataTypes, DATE } from 'sequelize'
 import { ENTITY_TYPES } from './enums.js'
 
-/*
-CREATE TABLE "entity" (
-  "id" guid PRIMARY KEY,
-  "entity_name" varchar,
-  "display_name" varchar,
-  "entity_type" entity_types,
-  "utility_type" varchar
-);
+/**
+ * Entities model
  */
-
 export default {
   id: {
     type: DataTypes.UUID,

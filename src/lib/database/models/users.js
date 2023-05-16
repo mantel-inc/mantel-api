@@ -1,12 +1,7 @@
 import {DataTypes, DATE} from 'sequelize'
 
 /**
- * CREATE TABLE "contact_info" (
- *   "user_id" guid PRIMARY KEY,
- *   "tracking_id" guid UNIQUE NOT NULL,
- *   "email" varchar,
- *   "address" json
- * );
+ * Users Model
  */
 export default {
     id: {

@@ -1,30 +1,9 @@
 import {DataTypes} from 'sequelize'
 import {ENERGY_SOURCES, PRODUCT_TYPES, HVAC_SYSTEM_TYPES} from './enums.js'
 
-/*
-CREATE TABLE "products" (
-  "id" guid PRIMARY KEY,
-  "product_type" product_types,
-  "hvac_system_type" varchar,
-  "cooling_capacity" float,
-  "heating_capacity" float,
-  "ventiliation_type" varchar,
-  "seer2" float,
-  "eer2" float,
-  "hspf2" float,
-  "cop" float,
-  "afue" float,
-  "manufacturer" varchar,
-  "manufacturer_model_number" varchar,
-  "ahri_number" varchar,
-  "ahri_ceritfication_URL" varchar,
-  "display_equipment_summary" varchar,
-  "display_equipment_detail" varchar,
-  "display_equipment_tooltip" varchar
-);
-
+/**
+ * Products model
  */
-
 export default {
     id: {
         type: DataTypes.UUID,
