@@ -1,5 +1,6 @@
 import {Sequelize, DataTypes, Model} from 'sequelize'
 
+
 import {
     ActivityEventsSchema,
     ContactInfoSchema,
@@ -16,11 +17,17 @@ import Contractors from './models/contractors.js'
 const {DB_URI} = process.env
 
 let sequelize
+/***
+ * connect make a connection to the database.
+ * this also will apply database models using the sequelize orm.
+ * @returns {Promise<Sequelize|*>}
+ */
 const connect = async () => {
     if(sequelize) {
         return sequelize
     }
     
+    /// Connect to the database
     if(process.env.NODE_ENV !== 'development') {
         const sslCaCert = Buffer.from(process.env.DB_CA_CERT, 'base64').toString('utf8')
         const config = {
@@ -44,14 +51,12 @@ const connect = async () => {
     } else {
         sequelize = new Sequelize(DB_URI, {dialect: 'postgres', logging: false})
     }
-    
+    /* this section below is used to initialize the models*/
     const timestampOptions = {
         timestamps: true,
         createdAt: 'created_at',
         updatedAt: 'updated_at'
     }
-    
-    // const DataTypes.ENUM('foo', 'bar')
     
     class ActivityEvent extends Model {
     }
@@ -140,17 +145,13 @@ const connect = async () => {
     
     Session.init(SessionsSchema, {sequelize, tableName: 'sessions', modelName: 'Sessions', ...timestampOptions})
     
-    /*
-      * Define data relationships
-      * */
+    /* Define data relationships */
     
     User.hasMany(ActivityEvent, {foreignKey: 'user_id'})
-    // User.hasMany(Session, {as: 'Sessions', foreignKey: 'user_id'})
     
     
     Contractor.hasMany(ContractorOptions, {as: 'ContractorOptions', foreignKey: 'contractor_id'})
     Contractor.hasMany(ActivityEvent, {foreignKey: 'contractor_id'})
-    // Contractor.hasMany(Session, {foreignKey: 'contractor_id'})
     
     ContractorOptions.belongsTo(Contractor, {as: 'Contractor', foreignKey: 'contractor_id'})
     ContractorOptions.belongsTo(Product, {as: 'CoolingProduct', foreignKey: 'cooling_product_id'})
@@ -163,21 +164,20 @@ const connect = async () => {
     Session.hasMany(Question, {as: 'Questions', foreignKey: {name: 'session_id', allowNull: false}})
     Question.belongsTo(Session, {foreignKey: 'session_id'})
     
-    // Question.hasOne(Session,{as: 'Session', foreignKey: 'session_id'})
     User.hasMany(Session, {as: 'Sessions', foreignKey: {name: 'user_id', allowNull: false}})
     Session.belongsTo(User, {foreignKey: 'user_id'})
     Contractor.hasMany(Session, {as: 'Sessions', foreignKey: {name: 'contractor_id', allowNull: false}})
     Session.belongsTo(Contractor, {foreignKey: 'contractor_id'})
-    // Session.hasOne(Contractor, {as: 'Contractor', foreignKey: 'contractor_id'})
-    // Contractor.hasMany(Session, {as: 'Sessions', foreignKey: 'contractor_id'})
     
     
     Entity.hasMany(Incentive, {foreignKey: 'entity_id'})
     Incentive.belongsTo(Entity, {as: 'Entity', foreignKey: 'entity_id'})
     
     try {
+        // authenticate
         await sequelize.authenticate()
         console.log('Connection has been established successfully.')
+        // sync the models with the DB. Review sequelize docs for more on this function.
         await sequelize.sync()
         
     } catch (error) {
