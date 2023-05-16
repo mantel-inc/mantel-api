@@ -1,19 +1,9 @@
 import {DataTypes} from 'sequelize'
 import {EventTypes} from './enums.js'
 
-/*
-CREATE TABLE "activity_events" (
-  "id" guid PRIMARY KEY,
-  "session_id" guid,
-  "user_id" guid,
-  "tracking_id" guid,
-  "contractor_id" guid,
-  "event_type" event_types,
-  "data" json,
-  "event_source_path" varchar,
-  "event_source" varchar
-  "timestamp" timestampz
-);
+
+/**
+ * Activity Events Model
  */
 export default {
     id: {

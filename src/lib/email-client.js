@@ -1,31 +1,35 @@
 import sgMail from '@sendgrid/mail'
-import yaml from 'json-to-pretty-yaml'
-
+// set the sendgrid api key
 sgMail.setApiKey(process.env.SEND_GRID)
 
-let msg = {
-    from: 'scout@usemantel.com', // Change to your verified sender
-}
 
+/***
+ * sendEmail
+ * @param data
+ * @returns {Promise<void>}
+ */
 const sendEmail = async (data) => {
     console.log('send email')
-    // const {to, body} = data
     try {
-        // let to = [{email: 'epmiller8464@gmail.com'}, {email: 'zac@usemantel.com'}, {email: 'zdearing@gmail.com'}]
         let to = []
-        
         if(data.to && data.to.length > 0) {
             to.push(...data.to.map((e) => {
                 return {email: e}
             }))
         }
-        // console.log(yaml.stringify(body))
-        msg.template_id = data.template_id ?? 'd-265205be7ef94c3088b8bee3999e0c35'
-        msg.personalizations = [{
-            to: to,
-            dynamic_template_data: data.body
-        }]
-        
+        let msg = {
+            // verified sendgrid email
+            from: 'scout@usemantel.com',
+            // set the sendgrid email template id
+            template_id: data.template_id ?? 'd-265205be7ef94c3088b8bee3999e0c35',
+            /// passing the email template data defined in the sendgrid ui
+            /// the data should derive from the templateId
+            personalizations: [{
+                to: to,
+                dynamic_template_data: data.body
+            }]
+        }
+        // send the email
         await sgMail.send(msg)
         console.log('Email sent')
     } catch (error) {

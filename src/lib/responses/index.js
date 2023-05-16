@@ -1,3 +1,9 @@
+/**
+ * OkResponse: successful request response
+ * @param data
+ * @returns {{data}}
+ * @constructor
+ */
 export const OkResponse = (data) => {
     return {
         data: data
@@ -5,7 +11,7 @@ export const OkResponse = (data) => {
 }
 
 /**
- *
+ * ErrorResponse: format errors
  * @param err
  * @param message
  * @param code

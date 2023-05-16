@@ -1,22 +1,10 @@
 import {DataTypes, DATE} from 'sequelize'
 import {OPTION_TYPES} from './enums.js'
 
-/*
-CREATE TABLE "contractor_options" (
-  "id" guid PRIMARY KEY,
-  "homeowner_selection" option_types,
-  "presentation_order" int,
-  "contractor_id" guid,
-  "display_title" varchar,
-  "display_subtitle" varchar,
-  "display_energy_bill" varchar,
-  "display_carbon_reduction" int,
-  "display_picture" varchar,
-  "cooling_product_id" guid,
-  "heating_product_id" guid
-);
- */
 
+/**
+ * Contractor Options Model Model
+ */
 export default {
     id: {
         type: DataTypes.UUID,

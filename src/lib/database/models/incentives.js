@@ -1,34 +1,9 @@
 import { DataTypes, DATE } from 'sequelize'
 import { ENERGY_SOURCES, PRODUCT_TYPES } from './enums.js'
 
-/*
-CREATE TABLE "contractor_options" (
- CREATE TABLE "incentives" (
-  "id" guid PRIMARY KEY,
-  "entity_id" guid NOT NULL,
-  "energy_source" varchar,
-  "region" varchar,
-  "product_type" product_types,
-  "hvac_system_type" varchar,
-  "tonnage" int,
-  "capacity" int,
-  "ventilation_type" varchar,
-  "seer2" float,
-  "eer2" float,
-  "hspf2" float,
-  "cop" float,
-  "afue" float,
-  "existing_system_required" boolean,
-  "existing_system_age" int,
-  "amount" float,
-  "display_name" varchar,
-  "display_text" varchar,
-  "documentation_url" varchar,
-  "last_updated" timestampz
-);
-);
+/**
+ * Incentives model
  */
-
 export default {
   id: {
     type: DataTypes.UUID,
