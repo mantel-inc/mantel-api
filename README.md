@@ -7,6 +7,7 @@ Before you can run the API, you need to have the following software installed on
 - Node.js v16 or later
 - npm (Node Package Manager)
 - Postgres v14.6 or later
+- [Sequelize ORM](https://sequelize.org/docs/v6/) knowledge
 
 ## Installation
 To install the API, follow these steps:
@@ -26,8 +27,7 @@ npm install
 ```
 4. Create a .env file and set the following environment variables:
    - **NOTE:** this project uses [dotenv flow](https://github.com/kerimdzhanov/dotenv-flow)
-   - 
-Ask Zac for access to secure credentials stored in 1password.
+   - Copies of the env files are stored in 1Password. Ask Mantel admins for access to secure credentials stored in 1password.
 
 ```dotenv
 # .env.development
@@ -65,7 +65,7 @@ DASHBOARD_URL=
 To run the API, follow these steps:
 
 1. Start the server:
-```bash
+```bash 
  NODE_ENV=development node src/www.js 
 ```
 2. The API will now be available at http://localhost:3000. You can test it using a tool like Postman.
