@@ -14,7 +14,7 @@ import {abandonStaleSessions} from "./lib/session-manager.js"
 const start = async () => {
     const db = await connect()
     const app = startServer(db)
-    schedule('* * * *', async () => {
+    schedule('* * */1 * * *', async () => {
         await abandonStaleSessions(db)
     })
     /**
