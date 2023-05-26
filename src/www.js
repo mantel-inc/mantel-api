@@ -3,7 +3,9 @@ import 'dotenv-flow/config.js'
 import startServer from './server.js'
 import http from 'http'
 import connect from "./lib/database/db.js"
+import {schedule} from 'node-cron'
 
+import {abandonStaleSessions} from "./lib/session-manager.js"
 
 /***
  * Application entry point
@@ -12,6 +14,9 @@ import connect from "./lib/database/db.js"
 const start = async () => {
     const db = await connect()
     const app = startServer(db)
+    schedule('* * * *', async () => {
+        await abandonStaleSessions(db)
+    })
     /**
      * Get port from environment and store in Express.
      */
